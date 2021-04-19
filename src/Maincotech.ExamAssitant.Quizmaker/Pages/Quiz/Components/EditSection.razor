@@ -1,0 +1,19 @@
+﻿@inherits FeedbackComponent<SectionViewModel, bool>
+
+<Form Model="this.Options"  
+      LabelColSpan="8"
+      WrapperColSpan="16" 
+      OnFinish="async(ctx) => await OnFinish(ctx)" 
+      OnFinishFailed="OnFinishFailed">
+   
+        <FormItem Label="Section Name:">
+            <Input @bind-Value="context.Name" Placeholder="Please input name" />
+        </FormItem>
+        <Editor @bind-Value="context.MarkdownContent" @bind-Html="context.HtmlContent" Mode="wysiwyg" MinHeight="500" Options="@EditorOptions" />
+    <Divider />   
+    <FormItem WrapperColOffset="8" WrapperColSpan="16">
+            <Button Type="@ButtonType.Primary" HtmlType="submit">
+                Submit
+            </Button>
+        </FormItem>
+</Form>

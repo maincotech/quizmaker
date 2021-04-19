@@ -1,0 +1,88 @@
+﻿@inherits FeedbackComponent<QuestionViewModel, bool>
+
+<Form Model="this.Options"
+      LabelColSpan="4"
+      WrapperColSpan="16"
+      OnFinish="async(ctx) => await OnFinish(ctx)"
+      OnFinishFailed="OnFinishFailed">
+    <ValidationSummary />
+    <FormItem Label="Type">
+        <Select @bind-Value="context.QuestionType" TItem="QuestionTypes" TItemValue="QuestionTypes">
+            <SelectOptions>
+                <SelectOption TItem="QuestionTypes" TItemValue="QuestionTypes" Value="QuestionTypes.SingleChoice" Label="Single Choice" />
+                <SelectOption TItem="QuestionTypes" TItemValue="QuestionTypes" Value="QuestionTypes.MultipleChoice" Label="Multiple Choice" />
+                <SelectOption TItem="QuestionTypes" TItemValue="QuestionTypes" Value="QuestionTypes.Statements" Label="Statements" />
+                <SelectOption TItem="QuestionTypes" TItemValue="QuestionTypes" Value="QuestionTypes.DragDrop" Label="DragDrop" />
+            </SelectOptions>
+        </Select>
+    </FormItem>
+    <Card Title="Title">
+        <Editor @bind-Value="context.Title" Mode="wysiwyg" MinHeight="300" Options="@EditorOptions" />
+    </Card>
+    @*<FormItem Label="Title">
+            <Editor @bind-Value="context.Title" Mode="wysiwyg" MinHeight="300" Options="@EditorOptions" />
+        </FormItem>*@
+    <Card Title="Options List">
+        <Button Type="dashed"
+                Style="width: 100%; margin-bottom: 8px;"
+                OnClick="OnAddOption">
+            <Icon Type="plus" Theme="outline" />
+            Add Option
+        </Button>
+        <AntList TItem="QuestionOptionViewModel"
+                 DataSource="context.Options"
+                 ItemLayout="ListItemLayout.Horizontal" Context="listItemContext">
+            <ListItem Actions="@GetOptionActions(listItemContext)">
+                <ListItemMeta>
+                    <DescriptionTemplate>
+                        <Input Placeholder="Input option" @bind-Value="listItemContext.Name" />
+                        @if (context.QuestionType == QuestionTypes.DragDrop)
+                        {
+                            <Input Placeholder="Input answer" @bind-Value="listItemContext.AnswerText" />
+                        }
+                        else
+                        {
+                            <Switch @bind-Value="listItemContext.IsCorrect">
+                                <CheckedChildrenTemplate>
+                                    <Icon Style="color:lawngreen" Type="check"></Icon>
+                                </CheckedChildrenTemplate>
+                                <UnCheckedChildrenTemplate>
+                                    <Icon Style="color:red" Type="close"></Icon>
+                                </UnCheckedChildrenTemplate>
+                            </Switch>
+                        }
+                    </DescriptionTemplate>
+                </ListItemMeta>
+            </ListItem>
+        </AntList>
+    </Card>
+
+    <Divider />
+
+    <Card Title="Analysis">
+        <Editor @bind-Value="context.Analysis" Mode="wysiwyg" MinHeight="300" Options="@EditorOptions" />
+    </Card>
+
+    <Divider />
+
+    <FormItem WrapperColOffset="8" WrapperColSpan="16">
+        <Button Type="@ButtonType.Primary" HtmlType="submit">
+            Submit
+        </Button>
+    </FormItem>
+</Form>
+
+@code{
+    private RenderFragment[] GetOptionActions(QuestionOptionViewModel viewModel)
+    {
+        var result = new List<RenderFragment>();
+        result.Add(GetDeleteOption(viewModel));
+        return result.ToArray();
+    }
+    private RenderFragment GetDeleteOption(QuestionOptionViewModel viewModel)
+    {
+        RenderFragment option =@<Icon Type="delete" OnClick="() => OnDeleteOption(viewModel)"></Icon>;
+        return option;
+    }
+
+}

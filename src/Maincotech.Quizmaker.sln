@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31105.61
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.ExamAssitant.Shared", "Maincotech.ExamAssitant.Shared\Maincotech.ExamAssitant.Shared.csproj", "{6C602C71-C117-418B-8EAF-28C43F7426A4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.Quizmaker", "Maincotech.ExamAssitant.Quizmaker\Maincotech.Quizmaker.csproj", "{1A7D1009-0701-439C-A601-C413E70AB8A6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C602C71-C117-418B-8EAF-28C43F7426A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C602C71-C117-418B-8EAF-28C43F7426A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C602C71-C117-418B-8EAF-28C43F7426A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C602C71-C117-418B-8EAF-28C43F7426A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A7D1009-0701-439C-A601-C413E70AB8A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A7D1009-0701-439C-A601-C413E70AB8A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A7D1009-0701-439C-A601-C413E70AB8A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A7D1009-0701-439C-A601-C413E70AB8A6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3EA902F6-5073-451A-ABFE-A2E56A01D04B}
+	EndGlobalSection
+EndGlobal
