@@ -11,6 +11,10 @@ namespace Maincotech.Quizmaker.Pages.Quiz
 {
     public class QuestionViewModel : ReactiveObject
     {
+        public string ExamId { get; set; }
+
+        public string SectionId { get; set; }
+
         public string Id { get; set; }
 
         private string _Title;

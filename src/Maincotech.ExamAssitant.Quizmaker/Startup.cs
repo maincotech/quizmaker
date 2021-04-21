@@ -1,22 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using ElectronNET.API;
+using Maincotech.ExamAssitant.Services;
+using Maincotech.Quizmaker.Services;
+using Maincotech.Storage;
+using Maincotech.Storage.AzureBlob;
+using Maincotech.Web.Components.Vditor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using AntDesign.Pro.Layout;
-using Maincotech.Quizmaker.Services;
-using ElectronNET.API;
-using Maincotech.Web.Components.Vditor;
-using Maincotech.Storage;
-using Maincotech.Storage.AzureBlob;
-using Maincotech.ExamAssitant.Services;
+using Microsoft.Extensions.Options;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Maincotech.Quizmaker
 {
@@ -36,11 +35,11 @@ namespace Maincotech.Quizmaker
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddAntDesign();
-			services.AddScoped(sp => new HttpClient
+            services.AddScoped(sp => new HttpClient
             {
                 BaseAddress = new Uri(sp.GetService<NavigationManager>().BaseUri)
             });
-            services.Configure<ProSettings>(Configuration.GetSection("ProSettings"));
+            //   services.Configure<ProSettings>(Configuration.GetSection("ProSettings"));
             services.Configure<AzSettings>(Configuration.GetSection("AzSettings"));
             services.Configure<FirestoreSettings>(Configuration.GetSection("FirestoreSettings"));
 
@@ -51,7 +50,15 @@ namespace Maincotech.Quizmaker
             services.AddScoped<IProfileService, ProfileService>();
 
             services.AddSingleton<IQuizService, QuizService>();
-            services.AddSingleton<IExamService, ExamService>();
+            services.AddSingleton<IExamService, ExamService>(sp =>
+            {
+                var azSettings = sp.GetService<IOptions<AzSettings>>().Value;
+                var firestoreSettings = sp.GetService<IOptions<FirestoreSettings>>().Value;
+                var keyVaultClient = new SecretClient(new Uri(azSettings.VaultURI),
+                    new ClientSecretCredential(azSettings.TenantId, azSettings.ClientId, azSettings.ClientSecret));
+                var gAuthJson = keyVaultClient.GetSecret(firestoreSettings.ProfileName).Value;
+                return new ExamService(firestoreSettings.ProjectId, gAuthJson.Value);
+            });
 
             services.AddSingleton<IBlobStorage, AzureBlobStorage>(sp =>
             {
@@ -91,10 +98,8 @@ namespace Maincotech.Quizmaker
                 endpoints.MapFallbackToPage("/_Host");
             });
 
-
             // Open the Electron-Window here
             Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
-
         }
     }
 }

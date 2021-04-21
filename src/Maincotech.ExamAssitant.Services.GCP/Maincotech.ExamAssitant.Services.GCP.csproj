@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Maincotech.ExamAssitant.Services</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Cloud.Firestore" Version="2.3.1" />
+    <PackageReference Include="Maincotech.Common" Version="1.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Maincotech.ExamAssitant.Shared\Maincotech.ExamAssitant.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

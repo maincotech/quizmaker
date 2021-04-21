@@ -6,13 +6,15 @@ namespace Maincotech.ExamAssitant.Services
 {
     public interface IExamService
     {
-        Task CreateOrUpdateExam(ExamDto dto);
+        Task<ExamDto> CreateOrUpdateExam(ExamDto dto);
 
-        Task CreateOrUpdateSection(SectionDto dto);
+        Task<SectionDto> CreateOrUpdateSection(SectionDto dto);
 
-        Task CreateOrUpdateSection(QuestionDto dto);
+        Task<QuestionDto> CreateOrUpdateQuestion(QuestionDto dto);
 
         Task<ExamDto> GetExam(string id);
+
+        Task<IEnumerable<ExamDto>> GetExams();
 
         Task<IEnumerable<SectionDto>> GetSections(string examId);
 

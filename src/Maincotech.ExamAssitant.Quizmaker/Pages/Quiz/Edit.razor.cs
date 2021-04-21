@@ -1,5 +1,4 @@
 ﻿using AntDesign;
-using Maincotech.Quizmaker.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System;
@@ -11,6 +10,7 @@ namespace Maincotech.Quizmaker.Pages.Quiz
     {
         [Parameter] public string Id { get; set; }
         [Inject] private DrawerService DrawerService { get; set; }
+
         protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
@@ -72,6 +72,22 @@ namespace Maincotech.Quizmaker.Pages.Quiz
             //   Console.WriteLine($"Failed:{JsonSerializer.Serialize(model)}");
         }
 
+        private async Task OnSave()
+        {
+            IsLoading = true;
+            ViewModel.Save.Execute().Subscribe(
+                (unit) => { },
+                (ex) =>
+                {
+                    Console.WriteLine(ex);
+                    IsLoading = false;
+                },
+                () =>
+                {
+                    IsLoading = false;
+                });
+        }
+
         private async Task OnAddSection()
         {
             var options = new DrawerOptions()
@@ -83,8 +99,35 @@ namespace Maincotech.Quizmaker.Pages.Quiz
             var result = await DrawerService.CreateDialogAsync<Components.EditSection, SectionViewModel, bool>(options, vm);
             if (result)
             {
-                ViewModel.Sections.Add(vm);
+                IsLoading = true;
+                ViewModel.UpdateSection.Execute(vm).Subscribe(
+                (unit) => { },
+                (ex) =>
+                {
+                    Console.WriteLine(ex);
+                    IsLoading = false;
+                },
+                () =>
+                {
+                    IsLoading = false;
+                });
             }
+        }
+
+        private async Task OnDeleteSection(SectionViewModel viewModel)
+        {
+            IsLoading = true;
+            ViewModel.DeleteSection.Execute(viewModel).Subscribe(
+            (unit) => { },
+            (ex) =>
+            {
+                Console.WriteLine(ex);
+                IsLoading = false;
+            },
+            () =>
+            {
+                IsLoading = false;
+            });
         }
 
         private async Task OnEditSection(SectionViewModel viewModel)
@@ -101,6 +144,18 @@ namespace Maincotech.Quizmaker.Pages.Quiz
             if (result)
             {
                 viewModel.MergeDataFrom(vm);
+                IsLoading = true;
+                ViewModel.UpdateSection.Execute(viewModel).Subscribe(
+                (unit) => { },
+                (ex) =>
+                {
+                    Console.WriteLine(ex);
+                    IsLoading = false;
+                },
+                () =>
+                {
+                    IsLoading = false;
+                });
             }
         }
 
@@ -111,13 +166,23 @@ namespace Maincotech.Quizmaker.Pages.Quiz
                 Title = "Edit Question",
                 Width = 680,
             };
-            var vm = new QuestionViewModel() { Id = Guid.NewGuid().ToString() };
+            var vm = new QuestionViewModel() { ExamId = ViewModel.Id, SectionId = viewModel.Id };
             var result = await DrawerService.CreateDialogAsync<Components.EditQuestion, QuestionViewModel, bool>(options, vm);
 
             if (result)
             {
-                ViewModel.Questions.Add(vm);
-                viewModel.Questions.Add(vm);
+                IsLoading = true;
+                ViewModel.UpdateQuestion.Execute(vm).Subscribe(
+                (unit) => { },
+                (ex) =>
+                {
+                    Console.WriteLine(ex);
+                    IsLoading = false;
+                },
+                () =>
+                {
+                    IsLoading = false;
+                });
             }
         }
 
@@ -131,7 +196,7 @@ namespace Maincotech.Quizmaker.Pages.Quiz
             var vm = new QuestionViewModel();
             vm.MergeDataFrom(viewModel);
             //merege options
-            foreach(var item in viewModel.Options)
+            foreach (var item in viewModel.Options)
             {
                 var option = new QuestionOptionViewModel();
                 option.MergeDataFrom(item);
@@ -150,20 +215,67 @@ namespace Maincotech.Quizmaker.Pages.Quiz
                     option.MergeDataFrom(item);
                     viewModel.Options.Add(option);
                 }
+
+                IsLoading = true;
+                ViewModel.UpdateQuestion.Execute(viewModel).Subscribe(
+                (unit) => { },
+                (ex) =>
+                {
+                    Console.WriteLine(ex);
+                    IsLoading = false;
+                },
+                () =>
+                {
+                    IsLoading = false;
+                });
             }
         }
 
-
-        private async Task OnRemoveQuestion(SectionViewModel sectionViewModel,QuestionViewModel viewModel)
+        private async Task OnRemoveQuestion(QuestionViewModel viewModel)
         {
-            ViewModel.Questions.Remove(viewModel);
-            sectionViewModel.Questions.Remove(viewModel);
+            IsLoading = true;
+            ViewModel.DeleteQuestion.Execute(viewModel).Subscribe(
+            (unit) => { },
+            (ex) =>
+            {
+                Console.WriteLine(ex);
+                IsLoading = false;
+            },
+            () =>
+            {
+                IsLoading = false;
+            });
         }
-
 
         private void Callback(string[] keys)
         {
             Console.WriteLine(string.Join(',', keys));
+        }
+
+        private void OnSectionCollapsed(bool isCollapsed, SectionViewModel vm)
+        {
+            if (IsLoading)
+            {
+                return;
+            }
+            if (isCollapsed)
+            {
+                if (vm.IsLoaded == false)
+                {
+                    IsLoading = true;
+                    ViewModel.LoadSection.Execute(vm).Subscribe(
+            (unit) => { },
+            (ex) =>
+            {
+                Console.WriteLine(ex);
+                IsLoading = false;
+            },
+            () =>
+            {
+                IsLoading = false;
+            });
+                }
+            }
         }
     }
 }

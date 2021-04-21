@@ -15,20 +15,28 @@
               LabelColSpan="6"
               WrapperColSpan="16"
               Loading="IsLoading" OnFinish="async(ctx) => await OnFinish(ctx)" OnFinishFailed="OnFinishFailed">
-            <Card>
-                <FormItem Label="Title">
-                    <Input Placeholder="Please input title" @bind-Value="context.Title" />
-                </FormItem>
+            <Card Style="margin-bottom: 2px;"
+                  Title="Basic Information"
+                  BodyStyle="padding: 0px;">
+                <Extra>
+                    <Button Icon="save" @onclick="OnSave">
+                    </Button>
+                </Extra>
+                <ChildContent>
+                    <FormItem Label="Title">
+                        <Input Placeholder="Please input title" @bind-Value="context.Name" />
+                    </FormItem>
 
-                <FormItem Label="Provider">
-                    <Input Placeholder="Please input the provider" @bind-Value="context.Provider" />
-                </FormItem>
+                    <FormItem Label="Provider">
+                        <Input Placeholder="Please input the provider" @bind-Value="context.Provider" />
+                    </FormItem>
 
-                <FormItem Label="Duration">
-                    <Input @bind-Value="@context.Duration">
-                    <Suffix>Minutes </Suffix>
-                    </Input>
-                </FormItem>
+                    <FormItem Label="Duration">
+                        <Input @bind-Value="@context.Duration">
+                        <Suffix>Minutes </Suffix>
+                        </Input>
+                    </FormItem>
+                </ChildContent>
             </Card>
 
             <Card Style="margin-bottom: 2px;"
@@ -43,12 +51,18 @@
             </Card>
 
             <div>
-                <Collapse OnChange="Callback">
+                <Collapse>
                     @foreach (var item in ViewModel.Sections)
                     {
-                        <Panel Header="@item.Name">
+                        <Panel Header="@item.Name" Key="@item.Id" OnActiveChange="(val) => OnSectionCollapsed(val, item) ">
                             <ExtraTemplate>
-                                <div @onclick:stopPropagation><Icon Type="edit" OnClick="async() => await OnEditSection(item)" /></div>
+                                <span @onclick:stopPropagation>
+                                    <Icon Class="section-action" Type="edit" OnClick="async() => await OnEditSection(item)" />
+                                    <Popconfirm Title=@($"Are you sure to delete section ({item.Name}) with {item.NumberOfQuestions} questions?")
+                                                OnConfirm="async() => await OnDeleteSection(item)">
+                                        <Icon Class="section-action" Type="delete" />
+                                    </Popconfirm>
+                                </span>
                             </ExtraTemplate>
                             <ChildContent>
                                 <Preview Markdown="@item.MarkdownContent" />
@@ -125,12 +139,15 @@ return result.ToArray();
 }
 private RenderFragment GetDeleteAction(SectionViewModel sectionViewModel, QuestionViewModel viewModel)
 {
-RenderFragment option =@<Icon Type="delete" OnClick="() => OnRemoveQuestion(sectionViewModel,viewModel)"></Icon>;
-return option;
-}
-private RenderFragment GetEditAction(QuestionViewModel viewModel)
-{
-RenderFragment option =@<Icon Type="edit" OnClick="async () => await OnEditQuestion(viewModel)"></Icon>;
-return option;
-}
-}
+RenderFragment option =@<Popconfirm Title=@($"Are you sure to delete question ({viewModel.Title})?")
+            OnConfirm="async() => await OnRemoveQuestion(viewModel)">
+    <Icon Type="delete" Class="section-action"></Icon>
+    </Popconfirm>;
+    return option;
+    }
+    private RenderFragment GetEditAction(QuestionViewModel viewModel)
+    {
+    RenderFragment option =@<Icon Type="edit" Class="section-action" OnClick="async () => await OnEditQuestion(viewModel)"></Icon>;
+    return option;
+    }
+    }

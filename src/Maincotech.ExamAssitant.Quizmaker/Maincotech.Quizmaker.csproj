@@ -36,6 +36,7 @@
     <Exec WorkingDirectory="$(SolutionDir)" Command="npm run gulp:pro" />
   </Target>
   <ItemGroup>
+    <ProjectReference Include="..\Maincotech.ExamAssitant.Services.GCP\Maincotech.ExamAssitant.Services.GCP.csproj" />
     <ProjectReference Include="..\Maincotech.ExamAssitant.Shared\Maincotech.ExamAssitant.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>

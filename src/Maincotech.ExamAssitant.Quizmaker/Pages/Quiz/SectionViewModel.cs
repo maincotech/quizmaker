@@ -6,6 +6,8 @@ namespace Maincotech.Quizmaker.Pages.Quiz
 {
     public class SectionViewModel : ReactiveObject
     {
+        public string Id { get; set; }
+
         private string _Name;
 
         [Required]
@@ -30,6 +32,9 @@ namespace Maincotech.Quizmaker.Pages.Quiz
             get => _HtmlContent;
             set => this.RaiseAndSetIfChanged(ref _HtmlContent, value);
         }
+        public int NumberOfQuestions { get; set; }
+
+        public bool IsLoaded { get; set; }
 
         public ObservableCollection<QuestionViewModel> Questions { get; set; } = new ObservableCollection<QuestionViewModel>();
     }

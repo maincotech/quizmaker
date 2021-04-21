@@ -10,10 +10,11 @@ namespace Maincotech.ExamAssitant.Dtos
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string Vendor { get; set; }
+        public string Provider { get; set; }
         public int Duration { get; set; }
         public DateTime UpdateOn { get; set; }
         public string Description { get; set; }
         public int NumberOfQuestions { get; set; }
+        public int NumberOfSections { get; set; }
     }
 }
