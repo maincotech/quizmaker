@@ -5,4 +5,8 @@
     <RootNamespace>Maincotech.ExamAssitant</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Maincotech.Core" Version="1.2.0" />
+  </ItemGroup>
+
 </Project>

@@ -69,6 +69,11 @@ namespace Maincotech.Quizmaker
                 var blobStorage = sp.GetRequiredService<IBlobStorage>();
                 return new VditorService(blobStorage, "https://samaincotechportal.blob.core.windows.net/images/");
             });
+
+            //viewmodels
+
+            services.AddScoped<Pages.Exam.IndexViewModel>();
+
             AppRuntimeContext.Current.ConfigureServices(services, Configuration);
         }
 

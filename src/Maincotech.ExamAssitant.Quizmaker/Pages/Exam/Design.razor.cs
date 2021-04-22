@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Components.Forms;
 using System;
 using System.Threading.Tasks;
 
-namespace Maincotech.Quizmaker.Pages.Quiz
+namespace Maincotech.Quizmaker.Pages.Exam
 {
-    public partial class Edit
+    public partial class Design
     {
         [Parameter] public string Id { get; set; }
         [Inject] private DrawerService DrawerService { get; set; }
@@ -17,7 +17,7 @@ namespace Maincotech.Quizmaker.Pages.Quiz
             IsLoading = true;
             if (Id.IsNotNullOrEmpty())
             {
-                ViewModel = new QuizViewModel()
+                ViewModel = new DesignViewModel()
                 {
                     Id = Id
                 };
@@ -25,12 +25,12 @@ namespace Maincotech.Quizmaker.Pages.Quiz
             else
             {
                 var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-                ViewModel = new QuizViewModel()
+                ViewModel = new DesignViewModel()
                 {
                 };
                 //
             }
-            IsLoading = true;
+          
             ViewModel.Load.Execute().Subscribe(
                 (unit) => { },
                 (ex) =>

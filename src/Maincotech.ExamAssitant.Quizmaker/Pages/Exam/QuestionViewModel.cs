@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Maincotech.Quizmaker.Pages.Quiz
+namespace Maincotech.Quizmaker.Pages.Exam
 {
     public class QuestionViewModel : ReactiveObject
     {

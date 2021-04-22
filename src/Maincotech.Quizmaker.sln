@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.ExamAssitant.Sha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.Quizmaker", "Maincotech.ExamAssitant.Quizmaker\Maincotech.Quizmaker.csproj", "{1A7D1009-0701-439C-A601-C413E70AB8A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maincotech.ExamAssitant.Services.GCP", "Maincotech.ExamAssitant.Services.GCP\Maincotech.ExamAssitant.Services.GCP.csproj", "{80AF092C-DFFC-49B1-95E8-C43FCD21F573}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.ExamAssitant.Services.GCP", "Maincotech.ExamAssitant.Services.GCP\Maincotech.ExamAssitant.Services.GCP.csproj", "{80AF092C-DFFC-49B1-95E8-C43FCD21F573}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Maincotech.Quizmaker.Pages.Quiz.Components
+namespace Maincotech.Quizmaker.Pages.Exam.Components
 {
     public partial class EditSection
     {

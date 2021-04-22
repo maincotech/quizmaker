@@ -1,4 +1,5 @@
 ﻿using Google.Cloud.Firestore;
+using Maincotech.Data;
 using Maincotech.ExamAssitant.Dtos;
 using Maincotech.ExamAssitant.Services.Models;
 using Maincotech.Utilities;
@@ -11,7 +12,7 @@ namespace Maincotech.ExamAssitant.Services
 {
     public class ExamService : IExamService
     {
-        private static readonly string _collectionName = "exams";
+        private static readonly string _examCollectionName = "exams";
         private static readonly string _sectionCollectionName = "sections";
         private static readonly string _questionCollectionName = "questions";
         private static readonly Logging.ILogger Logger = AppRuntimeContext.Current.GetLogger<ExamService>();
@@ -34,13 +35,13 @@ namespace Maincotech.ExamAssitant.Services
             if (string.IsNullOrEmpty(dto.Id))
             {
                 //create new
-                var docRef = await db.Collection(_collectionName).AddAsync(entity);
+                var docRef = await db.Collection(_examCollectionName).AddAsync(entity);
                 dto.Id = docRef.Id;
             }
             else
             {
                 //update
-                await db.Collection(_collectionName).Document(dto.Id).SetAsync(entity);
+                await db.Collection(_examCollectionName).Document(dto.Id).SetAsync(entity);
             }
 
             dto.UpdateOn = DateTime.UtcNow;
@@ -50,7 +51,7 @@ namespace Maincotech.ExamAssitant.Services
 
         public async Task<SectionDto> CreateOrUpdateSection(SectionDto dto)
         {
-            var examDocRef = db.Collection(_collectionName).Document(dto.ExamId);
+            var examDocRef = db.Collection(_examCollectionName).Document(dto.ExamId);
             var examSnapshot = await examDocRef.GetSnapshotAsync();
             ParameterChecker.Against<FileNotFoundException>(examSnapshot.Exists == false, $"Exam {examSnapshot.Id} does not exist!");
 
@@ -79,7 +80,7 @@ namespace Maincotech.ExamAssitant.Services
 
         public async Task<QuestionDto> CreateOrUpdateQuestion(QuestionDto dto)
         {
-            var examDocRef = db.Collection(_collectionName).Document(dto.ExamId);
+            var examDocRef = db.Collection(_examCollectionName).Document(dto.ExamId);
             var examSnapshot = await examDocRef.GetSnapshotAsync();
             ParameterChecker.Against<FileNotFoundException>(examSnapshot.Exists == false, $"Exam {examSnapshot.Id} does not exist!");
 
@@ -122,14 +123,19 @@ namespace Maincotech.ExamAssitant.Services
             return dto;
         }
 
-        public Task DeleteExam(string id)
+        public async Task DeleteExam(string id)
         {
-            throw new NotImplementedException();
+            var examDocRef = db.Collection(_examCollectionName).Document(id);
+            var examSnapshot = await examDocRef.GetSnapshotAsync();
+            if (examSnapshot.Exists)
+            {
+                await examDocRef.DeleteAsync();
+            }
         }
 
         public async Task DeleteQuestion(string examId, string sectionId, string id)
         {
-            var examDocRef = db.Collection(_collectionName).Document(examId);
+            var examDocRef = db.Collection(_examCollectionName).Document(examId);
             var examSnapshot = await examDocRef.GetSnapshotAsync();
             ParameterChecker.Against<FileNotFoundException>(examSnapshot.Exists == false, $"Exam {examSnapshot.Id} does not exist!");
 
@@ -158,7 +164,7 @@ namespace Maincotech.ExamAssitant.Services
 
         public async Task DeleteSection(string examId, string sectionId)
         {
-            var examDocRef = db.Collection(_collectionName).Document(examId);
+            var examDocRef = db.Collection(_examCollectionName).Document(examId);
             var examSnapshot = await examDocRef.GetSnapshotAsync();
             ParameterChecker.Against<FileNotFoundException>(examSnapshot.Exists == false, $"Exam {examSnapshot.Id} does not exist!");
 
@@ -180,7 +186,7 @@ namespace Maincotech.ExamAssitant.Services
 
         public async Task<ExamDto> GetExam(string id)
         {
-            DocumentReference docRef = db.Collection(_collectionName).Document(id);
+            DocumentReference docRef = db.Collection(_examCollectionName).Document(id);
             DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
             if (snapshot.Exists)
             {
@@ -191,15 +197,10 @@ namespace Maincotech.ExamAssitant.Services
             throw new FileNotFoundException($"Document {snapshot.Id} does not exist!");
         }
 
-        public Task<IEnumerable<QuestionDto>> GetQuestions(string examId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<QuestionDto>> GetQuestions(string examId, string sectionId)
         {
             var result = new List<QuestionDto>();
-            Query query = db.Collection(_collectionName).Document(examId)
+            Query query = db.Collection(_examCollectionName).Document(examId)
                 .Collection(_sectionCollectionName).Document(sectionId).Collection(_questionCollectionName);
             var snapshot = await query.GetSnapshotAsync();
             foreach (DocumentSnapshot documentSnapshot in snapshot.Documents)
@@ -216,7 +217,7 @@ namespace Maincotech.ExamAssitant.Services
         public async Task<IEnumerable<SectionDto>> GetSections(string examId)
         {
             var result = new List<SectionDto>();
-            Query allSectionsQuery = db.Collection(_collectionName).Document(examId).Collection(_sectionCollectionName);
+            Query allSectionsQuery = db.Collection(_examCollectionName).Document(examId).Collection(_sectionCollectionName);
             QuerySnapshot allCitiesQuerySnapshot = await allSectionsQuery.GetSnapshotAsync();
             foreach (DocumentSnapshot documentSnapshot in allCitiesQuerySnapshot.Documents)
             {
@@ -229,7 +230,7 @@ namespace Maincotech.ExamAssitant.Services
         public async Task<IEnumerable<ExamDto>> GetExams()
         {
             var result = new List<ExamDto>();
-            Query allCitiesQuery = db.Collection(_collectionName);
+            Query allCitiesQuery = db.Collection(_examCollectionName);
             QuerySnapshot allCitiesQuerySnapshot = await allCitiesQuery.GetSnapshotAsync();
             foreach (DocumentSnapshot documentSnapshot in allCitiesQuerySnapshot.Documents)
             {
@@ -237,6 +238,105 @@ namespace Maincotech.ExamAssitant.Services
                 result.Add(entity.To<ExamDto>());
             }
             return result;
+        }
+
+        public async Task<PagedResult<QuestionDto>> GetQuestions(Pagination pagination, string examId, string searchText)
+        {
+            var examDocRef = db.Collection(_examCollectionName).Document(examId);
+            var examSnapshot = await examDocRef.GetSnapshotAsync();
+            ParameterChecker.Against<FileNotFoundException>(examSnapshot.Exists == false, $"Exam {examSnapshot.Id} does not exist!");
+
+            var exam = examSnapshot.ConvertTo<Exam>();
+
+            var sections = new List<Section>();
+            Query allSectionsQuery = db.Collection(_examCollectionName).Document(examId).Collection(_sectionCollectionName);
+            QuerySnapshot allCitiesQuerySnapshot = await allSectionsQuery.GetSnapshotAsync();
+            foreach (DocumentSnapshot documentSnapshot in allCitiesQuerySnapshot.Documents)
+            {
+                var section = documentSnapshot.ConvertTo<Section>();
+                sections.Add(section);
+            }
+
+            var startIndex = pagination.PageSize * (pagination.PageNumber-1) + pagination.Start;
+            var endIndex = startIndex + pagination.PageSize;
+
+            var needSections = new List<SectionQuery>();
+            var currentIndex = 0;
+            var remain = pagination.PageSize;
+            foreach (var section in sections)
+            {
+                if (currentIndex < startIndex)
+                {
+                    if (currentIndex + section.NumberOfQuestions < startIndex)
+                    {
+                        currentIndex += section.NumberOfQuestions;
+                        continue;
+                    }
+                    else
+                    {
+                        var start = startIndex - currentIndex;
+                        var canTake = section.NumberOfQuestions - start;
+                        var sectionQuery = new SectionQuery
+                        {
+                            ExamId = exam.Reference.Id,
+                            Section = section,
+                            Offset = start,
+                            Limit = remain < canTake ? remain : canTake
+                        };
+                        remain -= sectionQuery.Limit;
+                        needSections.Add(sectionQuery);
+                    }
+                }
+                else
+                {
+                    var sectionQuery = new SectionQuery
+                    {
+                        ExamId = exam.Reference.Id,
+                        Section = section,
+                        Offset = 0,
+                        Limit = remain < section.NumberOfQuestions ? remain : section.NumberOfQuestions
+                    };
+                    remain -= sectionQuery.Limit;
+                    needSections.Add(sectionQuery);
+                }
+                if (remain == 0)
+                {
+                    break;
+                }
+            }
+            var dtos = new List<QuestionDto>();
+            foreach (var sectionQuery in needSections)
+            {
+                var queryResult = await QuerySection(sectionQuery);
+                dtos.AddRange(queryResult);
+            }
+
+            return new PagedResult<QuestionDto>(exam.NumberOfQuestions, pagination.PageSize, pagination.PageNumber, dtos);
+        }
+
+        private async Task<IEnumerable<QuestionDto>> QuerySection(SectionQuery query)
+        {
+            var result = new List<QuestionDto>();
+            var questionsQuery = query.Section.Reference.Collection(_questionCollectionName).Offset(query.Offset).Limit(query.Limit);
+            QuerySnapshot questionsSnapshot = await questionsQuery.GetSnapshotAsync();
+            foreach (DocumentSnapshot documentSnapshot in questionsSnapshot.Documents)
+            {
+                var entity = documentSnapshot.ConvertTo<Question>();
+                var dto = entity.To<QuestionDto>();
+                dto.ExamId = query.ExamId;
+                dto.SectionId = query.Section.Reference.Id;
+                result.Add(dto);
+            }
+            return result;
+        }
+
+        private class SectionQuery
+        {
+            public string ExamId { get; set; }
+            public Section Section { get; set; }
+            public int Offset { get; set; }
+            public int Limit { get; set; }
+            public string SearchText { get; set; }
         }
     }
 }

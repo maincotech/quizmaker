@@ -1,17 +1,21 @@
-﻿using Maincotech.ExamAssitant.Dtos;
+﻿using Maincotech.Data;
+using Maincotech.ExamAssitant.Dtos;
 using Maincotech.ExamAssitant.Services;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 
-namespace Maincotech.Quizmaker.Pages.Quiz
+namespace Maincotech.Quizmaker.Pages.Exam
 {
-    public class QuizViewModel : ReactiveObject
+    public class EditViewModel : ReactiveObject
     {
+        private static Maincotech.Logging.ILogger _Logger = AppRuntimeContext.Current.GetLogger<EditViewModel>();
+
         private readonly IExamService _examService;
 
         private string _Name;
@@ -47,12 +51,30 @@ namespace Maincotech.Quizmaker.Pages.Quiz
             set => this.RaiseAndSetIfChanged(ref _Duration, value);
         }
 
-        public QuizViewModel()
+        public string SearchText { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+        public int Total { get; set; }
+
+        private readonly ObservableAsPropertyHelper<IEnumerable<QuestionViewModel>> _items;
+        public IEnumerable<QuestionViewModel> Items => _items.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isLoading;
+        public bool IsLoading => _isLoading.Value;
+
+        public EditViewModel()
         {
             _examService = AppRuntimeContext.Current.Resolve<IExamService>();
-            // _dataAdminService = AppRuntimeContext.Current.Resolve<Maincotech.Cms.Services.IAdminService>();
+            Search = ReactiveCommand.CreateFromTask(SearchAsync);
             Load = ReactiveCommand.CreateFromTask(LoadAsync);
-            Save = ReactiveCommand.CreateFromTask(SaveAsync);
+            _items = Search.ToProperty(this, x => x.Items, scheduler: RxApp.MainThreadScheduler);
+            Search.ThrownExceptions.Subscribe(exception =>
+            {
+                _Logger.Error("Unexpected error occurred.", exception);
+            });
+
+            this.WhenAnyObservable(x => x.Search.IsExecuting).ToProperty(this, x => x.IsLoading, out _isLoading);
+
             UpdateSection = ReactiveCommand.CreateFromTask<SectionViewModel>(CreateOrUpdateSectionAsync);
             DeleteSection = ReactiveCommand.CreateFromTask<SectionViewModel>(DeleteSectionAsync);
             UpdateQuestion = ReactiveCommand.CreateFromTask<QuestionViewModel>(CreateOrUpdateQuestionAsync);
@@ -60,7 +82,31 @@ namespace Maincotech.Quizmaker.Pages.Quiz
             LoadSection = ReactiveCommand.CreateFromTask<SectionViewModel>(LoadSectioinAsync);
         }
 
+        private async Task<IEnumerable<QuestionViewModel>> SearchAsync()
+        {
+            var result = new List<QuestionViewModel>();
+
+            var pagination = new Pagination
+            {
+                PageNumber = PageNumber,
+                PageSize = PageSize,
+            };
+            var entities = await _examService.GetQuestions(pagination, Id, SearchText);
+            Total = entities.TotalRecords;
+            if (entities.Count > 0)
+            {
+                var viewModels = AppRuntimeContext.Current.Adapt<List<QuestionViewModel>>(entities);
+                result.AddRange(viewModels);
+            }
+            //  await Task.Delay(1000 * 3);
+            return result;
+        }
+
+        // public ReactiveCommand<Unit, Unit> Load { get; }
+        public ReactiveCommand<Unit, IEnumerable<QuestionViewModel>> Search { get; }
+
         public ReactiveCommand<Unit, Unit> Load { get; }
+
         public ReactiveCommand<SectionViewModel, Unit> UpdateSection { get; }
         public ReactiveCommand<SectionViewModel, Unit> DeleteSection { get; }
         public ReactiveCommand<QuestionViewModel, Unit> UpdateQuestion { get; }
@@ -71,15 +117,15 @@ namespace Maincotech.Quizmaker.Pages.Quiz
 
         private async Task LoadSectioinAsync(SectionViewModel vm)
         {
-            var dtos =  await _examService.GetQuestions(Id, vm.Id);
-            foreach(var dto in dtos)
+            var dtos = await _examService.GetQuestions(Id, vm.Id);
+            foreach (var dto in dtos)
             {
                 var questionVM = dto.To<QuestionViewModel>();
                 vm.Questions.Add(questionVM);
             }
             vm.IsLoaded = true;
-          //  var section = Sections.First(x => x.Id == vm.SectionId);
-           // section.Questions.Remove(vm);
+            //  var section = Sections.First(x => x.Id == vm.SectionId);
+            // section.Questions.Remove(vm);
         }
 
         private async Task DeleteQuestionAsync(QuestionViewModel vm)
@@ -168,7 +214,7 @@ namespace Maincotech.Quizmaker.Pages.Quiz
         public int GetIndex(QuestionViewModel viewModel)
         {
             var index = 1;
-            SectionViewModel sectionViewModel = null ;
+            SectionViewModel sectionViewModel = null;
             foreach (var section in Sections)
             {
                 if (section.Id == viewModel.SectionId)
@@ -180,27 +226,13 @@ namespace Maincotech.Quizmaker.Pages.Quiz
             }
             foreach (var question in sectionViewModel.Questions)
             {
-                if(question.Id == viewModel.Id)
+                if (question.Id == viewModel.Id)
                 {
                     break;
                 }
                 index++;
             }
             return index;
-        }
-
-        public ReactiveCommand<Unit, Unit> Save { get; }
-
-        public async Task SaveAsync()
-        {
-            var examDto = new ExamDto
-            {
-                Id = Id,
-                Name = Name,
-                Duration = Duration,
-                Provider = Provider
-            };
-            examDto = await _examService.CreateOrUpdateExam(examDto);
         }
     }
 }

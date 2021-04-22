@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Maincotech.Quizmaker.Pages.Quiz
+namespace Maincotech.Quizmaker.Pages.Exam
 {
     public class SectionViewModel : ReactiveObject
     {

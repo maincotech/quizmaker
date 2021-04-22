@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Maincotech.Adapter;
 using Maincotech.ExamAssitant.Dtos;
-using Maincotech.Quizmaker.Pages.Quiz;
+using Maincotech.Quizmaker.Pages.Exam;
 using System;
 using System.Collections.Generic;
 using System.Linq;

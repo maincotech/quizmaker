@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Maincotech.Quizmaker.Pages.Quiz.Components
+namespace Maincotech.Quizmaker.Pages.Exam.Components
 {
     public partial class EditQuestion
     {
