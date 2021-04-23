@@ -1,11 +1,11 @@
 ﻿using Google.Cloud.Firestore;
-using Maincotech.Data;
 using Maincotech.ExamAssitant.Dtos;
 using Maincotech.ExamAssitant.Services.Models;
 using Maincotech.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Maincotech.ExamAssitant.Services
@@ -240,7 +240,40 @@ namespace Maincotech.ExamAssitant.Services
             return result;
         }
 
-        public async Task<PagedResult<QuestionDto>> GetQuestions(Pagination pagination, string examId, string searchText)
+        private async Task<SectionQueryResutl> QuerySection(SectionQuery query, int offsetInExam)
+        {
+            var result = new List<QuestionDto>();
+            var questionsQuery = query.Section.Reference.Collection(_questionCollectionName).Offset(query.Offset);
+
+            var remain = query.Limit;
+
+            QuerySnapshot questionsSnapshot = await questionsQuery.GetSnapshotAsync();
+            foreach (DocumentSnapshot documentSnapshot in questionsSnapshot.Documents)
+            {
+                offsetInExam++;
+                var entity = documentSnapshot.ConvertTo<Question>();
+
+                if (query.SearchText.IsNotNullOrEmpty()
+                    && !entity.Analysis.Contains(query.SearchText)
+                    && !entity.Title.Contains(query.SearchText)
+                    && !entity.Options.Any(x => (x.Name.Contains(query.SearchText) || (x.AnswerText.IsNotNullOrEmpty() && x.AnswerText.Contains(query.SearchText)))))
+                {
+                    continue;
+                }
+                var dto = entity.To<QuestionDto>();
+                dto.ExamId = query.ExamId;
+                dto.SectionId = query.Section.Reference.Id;
+                remain--;
+                result.Add(dto);
+            }
+            return new SectionQueryResutl
+            {
+                OffsetInExam = offsetInExam,
+                Items = result
+            };
+        }
+
+        public async Task<LoadMoreResult<QuestionDto>> GetQuestions(string examId, LoadMoreQuery query)
         {
             var examDocRef = db.Collection(_examCollectionName).Document(examId);
             var examSnapshot = await examDocRef.GetSnapshotAsync();
@@ -257,34 +290,41 @@ namespace Maincotech.ExamAssitant.Services
                 sections.Add(section);
             }
 
-            var startIndex = pagination.PageSize * (pagination.PageNumber-1) + pagination.Start;
-            var endIndex = startIndex + pagination.PageSize;
-
-            var needSections = new List<SectionQuery>();
+            var remain = query.Limit;
+            var dtos = new List<QuestionDto>();
             var currentIndex = 0;
-            var remain = pagination.PageSize;
-            foreach (var section in sections)
+            var offsetInExam = query.Offset;
+
+            for (int i = 0; i < sections.Count; i++)
             {
-                if (currentIndex < startIndex)
+                var section = sections[i];
+                if (currentIndex < query.Offset)
                 {
-                    if (currentIndex + section.NumberOfQuestions < startIndex)
+                    if (currentIndex + section.NumberOfQuestions < query.Offset)
                     {
                         currentIndex += section.NumberOfQuestions;
+                        offsetInExam += query.Offset;
                         continue;
                     }
                     else
                     {
-                        var start = startIndex - currentIndex;
-                        var canTake = section.NumberOfQuestions - start;
+                        var offsetInSection = query.Offset - currentIndex;
                         var sectionQuery = new SectionQuery
                         {
                             ExamId = exam.Reference.Id,
                             Section = section,
-                            Offset = start,
-                            Limit = remain < canTake ? remain : canTake
+                            Offset = offsetInSection,
+                            Limit = remain,
+                            SearchText = query.SearchText
                         };
-                        remain -= sectionQuery.Limit;
-                        needSections.Add(sectionQuery);
+
+                        var queryResult = await QuerySection(sectionQuery, offsetInExam);
+                        offsetInExam = queryResult.OffsetInExam;
+                        if (queryResult.Items.Any())
+                        {
+                            dtos.AddRange(queryResult.Items);
+                            remain -= queryResult.Items.Count;
+                        }
                     }
                 }
                 else
@@ -294,40 +334,24 @@ namespace Maincotech.ExamAssitant.Services
                         ExamId = exam.Reference.Id,
                         Section = section,
                         Offset = 0,
-                        Limit = remain < section.NumberOfQuestions ? remain : section.NumberOfQuestions
+                        Limit = remain,
+                        SearchText = query.SearchText
                     };
-                    remain -= sectionQuery.Limit;
-                    needSections.Add(sectionQuery);
+                    var queryResult = await QuerySection(sectionQuery, offsetInExam);
+                    offsetInExam = queryResult.OffsetInExam;
+                    if (queryResult.Items.Any())
+                    {
+                        dtos.AddRange(queryResult.Items);
+                        remain -= queryResult.Items.Count;
+                    }
                 }
                 if (remain == 0)
                 {
                     break;
                 }
             }
-            var dtos = new List<QuestionDto>();
-            foreach (var sectionQuery in needSections)
-            {
-                var queryResult = await QuerySection(sectionQuery);
-                dtos.AddRange(queryResult);
-            }
 
-            return new PagedResult<QuestionDto>(exam.NumberOfQuestions, pagination.PageSize, pagination.PageNumber, dtos);
-        }
-
-        private async Task<IEnumerable<QuestionDto>> QuerySection(SectionQuery query)
-        {
-            var result = new List<QuestionDto>();
-            var questionsQuery = query.Section.Reference.Collection(_questionCollectionName).Offset(query.Offset).Limit(query.Limit);
-            QuerySnapshot questionsSnapshot = await questionsQuery.GetSnapshotAsync();
-            foreach (DocumentSnapshot documentSnapshot in questionsSnapshot.Documents)
-            {
-                var entity = documentSnapshot.ConvertTo<Question>();
-                var dto = entity.To<QuestionDto>();
-                dto.ExamId = query.ExamId;
-                dto.SectionId = query.Section.Reference.Id;
-                result.Add(dto);
-            }
-            return result;
+            return new LoadMoreResult<QuestionDto>(offsetInExam < exam.NumberOfQuestions, offsetInExam, dtos);
         }
 
         private class SectionQuery
@@ -337,6 +361,12 @@ namespace Maincotech.ExamAssitant.Services
             public int Offset { get; set; }
             public int Limit { get; set; }
             public string SearchText { get; set; }
+        }
+
+        private class SectionQueryResutl
+        {
+            public int OffsetInExam { get; set; }
+            public IReadOnlyList<QuestionDto> Items { get; set; }
         }
     }
 }

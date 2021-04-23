@@ -20,41 +20,55 @@
     </Content>
     <ChildContent>
         <Skeleton Loading="IsLoading">
+            
+          
             <AntList TItem="QuestionViewModel"
                      Context="listItemContext"
                      Size="large"
                      ItemLayout="ListItemLayout.Vertical"
                      DataSource="@ViewModel.Items">
-                <ListItem>
-                    <ListItemMeta>
-                        <DescriptionTemplate>
-                            <Preview Markdown="@listItemContext.Title" />
-                            @foreach (var item in listItemContext.Options)
-                            {
-                                if (listItemContext.QuestionType == QuestionTypes.DragDrop)
+                <ChildContent>
+                    <ListItem>
+                        <ListItemMeta>
+                            <DescriptionTemplate>
+                                <Preview Markdown="@listItemContext.Title" />
+                                @foreach (var item in listItemContext.Options)
                                 {
-                                    <Alert Type="@AlertType.Success"
-                                           Message="@($"{item.Name}-{item.AnswerText}")" />
-                                }
-                                else
-                                {
-                                    if (item.IsCorrect)
+                                    if (listItemContext.QuestionType == QuestionTypes.DragDrop)
                                     {
                                         <Alert Type="@AlertType.Success"
-                                               Message="@($"{item.Name}")" ShowIcon="true" />
+                                               Message="@($"{item.Name}-{item.AnswerText}")" />
                                     }
                                     else
                                     {
-                                        <Alert Type="@AlertType.Error"
-                                               Message="@($"{item.Name}")" ShowIcon="true" />
+                                        if (item.IsCorrect)
+                                        {
+                                            <Alert Type="@AlertType.Success"
+                                                   Message="@($"{item.Name}")" ShowIcon="true" />
+                                        }
+                                        else
+                                        {
+                                            <Alert Type="@AlertType.Error"
+                                                   Message="@($"{item.Name}")" ShowIcon="true" />
+                                        }
                                     }
                                 }
-                            }
-                        </DescriptionTemplate>
-                    </ListItemMeta>
-                </ListItem>
+                            </DescriptionTemplate>
+                        </ListItemMeta>
+                    </ListItem>
+                </ChildContent>
+                <LoadMore>
+                    @if (!IsLoading && ViewModel.HasMoreData)
+                    {
+                        <div class="demo-loadmore-btn-content ">
+                            <Button OnClick="OnLoadMore">loading more</Button>
+                        </div>
+                    }
+                </LoadMore>
+                
             </AntList>
-            <Pagination Current="ViewModel.PageNumber" Total="ViewModel.Total" PageSize="ViewModel.PageSize" OnChange="(index) => Search()"></Pagination>
+
+
         </Skeleton>
     </ChildContent>
 </PageContainer>

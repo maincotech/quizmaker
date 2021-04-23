@@ -1,5 +1,4 @@
-﻿using Maincotech.Data;
-using Maincotech.ExamAssitant.Dtos;
+﻿using Maincotech.ExamAssitant.Dtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -19,7 +18,7 @@ namespace Maincotech.ExamAssitant.Services
 
         Task<IEnumerable<SectionDto>> GetSections(string examId);
 
-        Task<PagedResult<QuestionDto>> GetQuestions(Pagination pagination, string examId, string searchText);
+        Task<LoadMoreResult<QuestionDto>> GetQuestions(string examId, LoadMoreQuery query);
 
         Task<IEnumerable<QuestionDto>> GetQuestions(string examId, string sectionId);
 

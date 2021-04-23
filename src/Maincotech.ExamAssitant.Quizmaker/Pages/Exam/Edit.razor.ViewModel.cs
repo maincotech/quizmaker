@@ -1,9 +1,8 @@
-﻿using Maincotech.Data;
+﻿using Maincotech.ExamAssitant;
 using Maincotech.ExamAssitant.Dtos;
 using Maincotech.ExamAssitant.Services;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -55,19 +54,21 @@ namespace Maincotech.Quizmaker.Pages.Exam
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
         public int Total { get; set; }
+        public int NextOffset { get; set; }
 
-        private readonly ObservableAsPropertyHelper<IEnumerable<QuestionViewModel>> _items;
-        public IEnumerable<QuestionViewModel> Items => _items.Value;
-
+        public bool HasMoreData { get; set; }
         private readonly ObservableAsPropertyHelper<bool> _isLoading;
         public bool IsLoading => _isLoading.Value;
+
+        public ObservableCollection<QuestionViewModel> Items { get; set; } = new ObservableCollection<QuestionViewModel>();
 
         public EditViewModel()
         {
             _examService = AppRuntimeContext.Current.Resolve<IExamService>();
             Search = ReactiveCommand.CreateFromTask(SearchAsync);
             Load = ReactiveCommand.CreateFromTask(LoadAsync);
-            _items = Search.ToProperty(this, x => x.Items, scheduler: RxApp.MainThreadScheduler);
+            LoadMore = ReactiveCommand.CreateFromTask(LoadMoreAsync);
+
             Search.ThrownExceptions.Subscribe(exception =>
             {
                 _Logger.Error("Unexpected error occurred.", exception);
@@ -82,30 +83,46 @@ namespace Maincotech.Quizmaker.Pages.Exam
             LoadSection = ReactiveCommand.CreateFromTask<SectionViewModel>(LoadSectioinAsync);
         }
 
-        private async Task<IEnumerable<QuestionViewModel>> SearchAsync()
+        private async Task SearchAsync()
         {
-            var result = new List<QuestionViewModel>();
-
-            var pagination = new Pagination
+            Items.Clear();
+            var query = new LoadMoreQuery
             {
-                PageNumber = PageNumber,
-                PageSize = PageSize,
+                Limit = 10,
+                Offset = 0,
+                SearchText = SearchText
             };
-            var entities = await _examService.GetQuestions(pagination, Id, SearchText);
-            Total = entities.TotalRecords;
-            if (entities.Count > 0)
+            var queryResult = await _examService.GetQuestions(Id, query);
+            NextOffset = queryResult.NextOffset;
+            HasMoreData = queryResult.HasMoreData;
+            foreach (var dto in queryResult.Items)
             {
-                var viewModels = AppRuntimeContext.Current.Adapt<List<QuestionViewModel>>(entities);
-                result.AddRange(viewModels);
+                Items.Add(dto.To<QuestionViewModel>());
             }
-            //  await Task.Delay(1000 * 3);
-            return result;
+        }
+
+        private async Task LoadMoreAsync()
+        {
+            var query = new LoadMoreQuery
+            {
+                Limit = 10,
+                Offset = NextOffset,
+                SearchText = SearchText
+            };
+            var queryResult = await _examService.GetQuestions(Id, query);
+            HasMoreData = queryResult.HasMoreData;
+            NextOffset = queryResult.NextOffset;
+            foreach (var dto in queryResult.Items)
+            {
+                Items.Add(dto.To<QuestionViewModel>());
+            }
         }
 
         // public ReactiveCommand<Unit, Unit> Load { get; }
-        public ReactiveCommand<Unit, IEnumerable<QuestionViewModel>> Search { get; }
+        public ReactiveCommand<Unit, Unit> Search { get; }
 
         public ReactiveCommand<Unit, Unit> Load { get; }
+        public ReactiveCommand<Unit, Unit> LoadMore { get; }
 
         public ReactiveCommand<SectionViewModel, Unit> UpdateSection { get; }
         public ReactiveCommand<SectionViewModel, Unit> DeleteSection { get; }

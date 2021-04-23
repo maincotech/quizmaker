@@ -66,5 +66,19 @@ namespace Maincotech.Quizmaker.Pages.Exam
                     IsLoading = false;
                 });
         }
+        private void OnLoadMore()
+        {
+            IsLoading = true;
+            ViewModel.LoadMore.Execute().Subscribe(items => { },
+                ex =>
+                {
+                    Console.WriteLine(ex);
+                    IsLoading = false;
+                },
+                () =>
+                {
+                    IsLoading = false;
+                });
+        }
     }
 }
