@@ -1,17 +1,38 @@
 ﻿@namespace Maincotech.Quizmaker
 @inherits LayoutComponentBase
 
-<AntDesign.Pro.Layout.BasicLayout 
-    Logo="@("https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg")"
-    MenuData="_menuData">
-    <RightContentRender>
-        <Maincotech.Quizmaker.Components.RightContent />
-    </RightContentRender>
-    <ChildContent>
-        @Body
-    </ChildContent>
-</AntDesign.Pro.Layout.BasicLayout>
-<SettingDrawer />
+<Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+    <Authorized>
+        <AntDesign.Pro.Layout.BasicLayout Logo="@("https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg")"
+                                          MenuData="_menuData">
+            <RightContentRender>
+                <Maincotech.Quizmaker.Components.RightContent />
+            </RightContentRender>
+            <ChildContent>
+                @Body
+            </ChildContent>
+        </AntDesign.Pro.Layout.BasicLayout>
+        <SettingDrawer />
+    </Authorized>
+    <NotAuthorized>
+        @if (!context.User.Identity.IsAuthenticated)
+        {
+            <RedirectToLogin />
+        }
+        else
+        {
+            <Result Status="403"
+                    Title="403"
+                    SubTitle="Sorry, you are not authorized to access this page.">
+                <Extra>
+                    <Button Type="primary">Back Home</Button>
+                    <a href="/AzureADB2C/Account/SignIn">Log in</a>
+                </Extra>
+            </Result>
+        }
+    </NotAuthorized>
+</Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+
 
 @code
 {
