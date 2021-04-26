@@ -83,6 +83,7 @@ namespace Maincotech.Quizmaker
                 return new ExamService(firestoreSettings.ProjectId, gAuthJson.Value);
             });
 
+            services.AddSingleton<ISettingService, SettingService>();
             services.AddSingleton<IBlobStorage, AzureBlobStorage>(sp =>
             {
                 return new AzureBlobStorage(Configuration.GetConnectionString("azureStorage"));

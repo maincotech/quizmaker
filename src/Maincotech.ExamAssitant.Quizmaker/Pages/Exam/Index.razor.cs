@@ -29,7 +29,7 @@ namespace Maincotech.Quizmaker.Pages.Exam
 
         protected override async Task OnInitializedAsync()
         {
-            await IconServic.CreateFromIconfontCN("//at.alicdn.com/t/font_2504866_9vm4yvl6p8e.js");
+            await IconServic.CreateFromIconfontCN("//at.alicdn.com/t/font_2504866_x7llrglw92.js");
 
             IsLoading = true;
             ViewModel.Load.Execute().Subscribe(

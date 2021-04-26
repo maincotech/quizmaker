@@ -2,6 +2,7 @@
 using Maincotech.Adapter;
 using Maincotech.ExamAssitant.Dtos;
 using Maincotech.Quizmaker.Pages.Exam;
+using Maincotech.Quizmaker.Pages.Setting.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Maincotech.Quizmaker.MapperProfiles
         {
             CreateMap<QuestionOptionDto, QuestionOptionViewModel>();
             CreateMap<QuestionDto, QuestionViewModel>();
-
+            CreateMap<FirebaseSettingDto, FirebaseSettingsViewModel>();
             //CreateMap<Category, CategoryDto>();
 
             //CreateMap<Article, ArticleDto>()

@@ -1,7 +1,7 @@
-﻿using System.Net.Http;
-using System.Net.Http.Json;
+﻿using Maincotech.Quizmaker.Models;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Maincotech.Quizmaker.Models;
 
 namespace Maincotech.Quizmaker.Services
 {
@@ -12,16 +12,41 @@ namespace Maincotech.Quizmaker.Services
 
     public class UserService : IUserService
     {
-        private readonly HttpClient _httpClient;
+        //  private readonly HttpClient _httpClient;
+        private AuthenticationStateProvider _authenticationStateProvider;
 
-        public UserService(HttpClient httpClient)
+        private CurrentUser _currentUser;
+
+        public UserService(AuthenticationStateProvider authenticationStateProvider)
         {
-            _httpClient = httpClient;
+            _authenticationStateProvider = authenticationStateProvider;
+            _authenticationStateProvider.AuthenticationStateChanged += (task) => OnAuthenticationStateChanged(task).GetAwaiter().GetResult();
         }
 
         public async Task<CurrentUser> GetCurrentUserAsync()
         {
-            return await _httpClient.GetFromJsonAsync<CurrentUser>("data/current_user.json");
+            if (_currentUser == null)
+            {
+                var task = _authenticationStateProvider.GetAuthenticationStateAsync();
+                await OnAuthenticationStateChanged(task);
+            }
+            return _currentUser;
+        }
+
+        private async Task OnAuthenticationStateChanged(Task<AuthenticationState> task)
+        {
+            var state = await task;
+            if (state.User.Identity.IsAuthenticated)
+            {
+                var groups = state.User.FindAll("groups");
+
+                _currentUser = new CurrentUser
+                {
+                    Name = state.User.FindFirst("name").Value,
+                    // Groups = string.Join(";", groups.Select(x => x.Value)),
+                    Userid = state.User.FindFirst(ClaimTypes.NameIdentifier).Value
+                };
+            }
         }
     }
 }

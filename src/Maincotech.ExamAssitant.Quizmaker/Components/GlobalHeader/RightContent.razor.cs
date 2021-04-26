@@ -66,13 +66,13 @@ namespace Maincotech.Quizmaker.Components
             switch (item.Key)
             {
                 case "center":
-                    NavigationManager.NavigateTo("/account/center");
+                    NavigationManager.NavigateTo("/MicrosoftIdentity/Account/EditProfile/", true);
                     break;
                 case "setting":
-                    NavigationManager.NavigateTo("/account/settings");
+                    NavigationManager.NavigateTo("/MicrosoftIdentity/Account/EditProfile/",true);
                     break;
                 case "logout":
-                    NavigationManager.NavigateTo("/user/login");
+                    NavigationManager.NavigateTo("/MicrosoftIdentity/Account/Signout/", true);
                     break;
             }
         }

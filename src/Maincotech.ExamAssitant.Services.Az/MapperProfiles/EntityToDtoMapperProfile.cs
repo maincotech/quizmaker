@@ -1,20 +1,17 @@
 ﻿using AutoMapper;
 using Maincotech.Adapter;
 using Maincotech.ExamAssitant.Dtos;
-using Maincotech.Quizmaker.Pages.Exam;
-using Maincotech.Quizmaker.Pages.Setting.Components;
+using Maincotech.ExamAssitant.Services.Models;
 
-namespace Maincotech.Quizmaker.MapperProfiles
+namespace Maincotech.ExamAssitant.Services.MapperProfiles
 {
-    public class ViewModelToDtoMapperProfile : Profile, IOrderedMapperProfile
+    internal class EntityToDtoMapperProfile : Profile, IOrderedMapperProfile
     {
         public int Order => 2;
 
-        public ViewModelToDtoMapperProfile()
+        public EntityToDtoMapperProfile()
         {
-            CreateMap<QuestionOptionViewModel, QuestionOptionDto>();
-            CreateMap<QuestionViewModel, QuestionDto>();
-            CreateMap<FirebaseSettingsViewModel, FirebaseSettingDto>();
+            CreateMap<FirebaseSetting, FirebaseSettingDto>();
 
             //CreateMap<Category, CategoryDto>();
 

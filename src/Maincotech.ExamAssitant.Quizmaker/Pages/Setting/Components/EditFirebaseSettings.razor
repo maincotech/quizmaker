@@ -1,0 +1,19 @@
+﻿@inherits FeedbackComponent<FirebaseSettingsViewModel, bool>
+
+<Form Layout="vertical"
+      OnFinish="async(ctx) => await OnFinish(ctx)"
+      Model="@Options">
+
+    <FormItem Label="ProjectId">
+        <AntDesign.Input @bind-Value="@context.ProjectId" />
+    </FormItem>
+    <FormItem Label="Json Credentials">
+        <TextArea name="JsonCredentials" Placeholder="Please input the json credentials" MinRows="3" MaxRows="5" @bind-Value="@context.JsonCredentials" />
+    </FormItem>
+
+    <FormItem>
+        <Button HtmlType="submit" Type="primary">
+            Update
+        </Button>
+    </FormItem>
+</Form>

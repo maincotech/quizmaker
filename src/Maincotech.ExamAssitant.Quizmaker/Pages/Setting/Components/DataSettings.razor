@@ -1,0 +1,11 @@
+﻿<h3>DataSettings</h3>
+
+<AntList TItem="UserSettingItem" ItemLayout="ListItemLayout.Horizontal" DataSource="_data">
+    <ListItem Actions="context.Actions">
+        <ListItemMeta Title="@context.Title" Description="@context.Description">
+            <AvatarTemplate>
+                <IconFont Type="@context.Avater" Class="@context.Avater" />
+            </AvatarTemplate>
+        </ListItemMeta>
+    </ListItem>   
+</AntList>

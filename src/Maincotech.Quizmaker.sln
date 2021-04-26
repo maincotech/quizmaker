@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.Quizmaker", "Mai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.ExamAssitant.Services.GCP", "Maincotech.ExamAssitant.Services.GCP\Maincotech.ExamAssitant.Services.GCP.csproj", "{80AF092C-DFFC-49B1-95E8-C43FCD21F573}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maincotech.ExamAssitant.Services.Az", "Maincotech.ExamAssitant.Services.Az\Maincotech.ExamAssitant.Services.Az.csproj", "{FAD03C67-DCBF-4551-805A-2C1ED1A8A2B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{80AF092C-DFFC-49B1-95E8-C43FCD21F573}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80AF092C-DFFC-49B1-95E8-C43FCD21F573}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80AF092C-DFFC-49B1-95E8-C43FCD21F573}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAD03C67-DCBF-4551-805A-2C1ED1A8A2B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAD03C67-DCBF-4551-805A-2C1ED1A8A2B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAD03C67-DCBF-4551-805A-2C1ED1A8A2B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAD03C67-DCBF-4551-805A-2C1ED1A8A2B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

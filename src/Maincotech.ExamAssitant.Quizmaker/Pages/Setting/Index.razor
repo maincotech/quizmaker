@@ -1,0 +1,34 @@
+﻿@page "/setting"
+@inherits RuiComponentBase<IndexViewModel>
+
+
+<GridContent>
+    <div class="main__b__2">
+        <div class="leftMenu">
+            <Menu Mode="MenuMode.Inline"
+                  SelectedKeys="new []{_selectKey}"
+                  OnMenuItemClicked="SelectKey">
+                @foreach (var item in _menuMap)
+                {
+                    <MenuItem Key="@item.Key">@item.Value</MenuItem>
+                }
+            </Menu>
+        </div>
+        <div class="right__b__0">
+            <div class="title">@_menuMap[_selectKey]</div>
+            <Spin Spinning="IsLoading">
+                <CascadingValue Value="this">
+                    @switch (_selectKey)
+                    {
+                        case "base":
+                            <Maincotech.Quizmaker.Pages.Setting.Components.DataSettings />
+                            break;
+
+                    }
+                </CascadingValue>
+            </Spin>
+
+
+        </div>
+    </div>
+</GridContent>
