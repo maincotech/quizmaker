@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FirebaseAdmin.Auth;
 using Maincotech.Adapter;
 using Maincotech.ExamAssistant.Dtos;
 using Maincotech.ExamAssistant.Services.Models;
@@ -22,7 +23,10 @@ namespace Maincotech.ExamAssistant.Services.MapperProfiles
             CreateMap<Question, QuestionDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom((src, dest, destMember, context) => src.Reference.Id));
 
-
+            CreateMap<ExportedUserRecord, AppUserDto>()
+                .ForMember(dest => dest.Password, opt => opt.Ignore())
+                .ForMember(dest => dest.LastSignInTimestamp, opt => opt.MapFrom((src, dest, destMember, context) => src.UserMetaData.LastSignInTimestamp))
+                .ForMember(dest => dest.CreationTimestamp, opt => opt.MapFrom((src, dest, destMember, context) => src.UserMetaData.CreationTimestamp));
 
             //CreateMap<Category, CategoryDto>();
 

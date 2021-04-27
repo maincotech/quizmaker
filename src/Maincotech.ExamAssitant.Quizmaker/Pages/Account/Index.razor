@@ -1,0 +1,59 @@
+﻿@page "/accounts"
+@inherits RuiComponentBase<IndexViewModel>
+
+<div>
+    <PageContainer Title="Accounts">
+
+        <ChildContent>
+            <div class="standardList">
+                <Card Class="listCard"
+                      Style="margin-top: 24px;"
+                      BodyStyle="padding: 0 32px 40px 32px">
+                    <Extra>
+                        <div class="extraContent">
+                            <Search Class="extraContentSearch" Placeholder="Please Enter" @bind-Value="ViewModel.SearchKeyword" />
+                        </div>
+                    </Extra>
+                    <ChildContent>
+                        <Button Type="dashed"
+                                Style="width: 100%; margin-bottom: 8px;"
+                                OnClick="OnAddAppUser">
+                            <Icon Type="plus" Theme="outline" />
+                            Add
+                        </Button>
+
+                        <AntList TItem="Maincotech.ExamAssistant.Dtos.AppUserDto"
+                                 DataSource="ViewModel.Items"
+                                 ItemLayout="ListItemLayout.Horizontal">
+                            <ListItem>
+                                <ListItemMeta Title="@context.Email">
+                                    <AvatarTemplate>
+                                        <Avatar Src="@context.PhotoUrl" />
+                                    </AvatarTemplate>
+                                </ListItemMeta>
+                                <div class="listContent">
+                                    <div class="listContentItem">
+                                        <span>Uid</span>
+                                        <p>@context.Uid</p>
+                                    </div>
+                                    @*<div class="listContentItem">
+                                        <span>Email</span>
+                                        <p>@context.Email</p>
+                                    </div>*@
+                                    <div class="listContentItem">
+                                        <span>Creation time</span>
+                                        <p>@context.CreationTimestamp?.ToString("yyyy-MM-dd HH:mm")</p>
+                                    </div>
+                                    <div class="listContentItem">
+                                        <span>Signin time</span>
+                                        <p>@context.LastSignInTimestamp?.ToString("yyyy-MM-dd HH:mm")</p>
+                                    </div>
+                                </div>
+                            </ListItem>
+                        </AntList>
+                    </ChildContent>
+                </Card>
+            </div>
+        </ChildContent>
+    </PageContainer>
+</div>

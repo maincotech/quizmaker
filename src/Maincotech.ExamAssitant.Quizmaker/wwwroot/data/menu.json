@@ -10,5 +10,11 @@
     "name": "Setting",
     "key": "setting",
     "icon": "setting"
+  },
+  {
+    "path": "/accounts",
+    "name": "Accounts",
+    "key": "accounts",
+    "icon": "team"
   }
 ]

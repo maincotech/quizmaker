@@ -13,6 +13,9 @@ namespace Maincotech.ExamAssistant.Services.MapperProfiles
         {
             CreateMap<FirebaseSetting, FirebaseSettingDto>();
 
+          
+
+
             //CreateMap<Category, CategoryDto>();
 
             //CreateMap<Article, ArticleDto>()
