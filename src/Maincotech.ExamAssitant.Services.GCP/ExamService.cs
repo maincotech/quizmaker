@@ -234,7 +234,7 @@ namespace Maincotech.ExamAssistant.Services
             QuerySnapshot allCitiesQuerySnapshot = await allCitiesQuery.GetSnapshotAsync();
             foreach (DocumentSnapshot documentSnapshot in allCitiesQuerySnapshot.Documents)
             {
-                var entity = documentSnapshot.ConvertTo<Exam>();
+                Exam entity = documentSnapshot.ConvertTo<Exam>();
                 result.Add(entity.To<ExamDto>());
             }
             return result;

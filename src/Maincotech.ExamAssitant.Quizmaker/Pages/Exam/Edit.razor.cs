@@ -17,18 +17,25 @@ namespace Maincotech.Quizmaker.Pages.Exam
             await base.OnParametersSetAsync();
             IsLoading = true;
 
-            ViewModel = new EditViewModel()
+            ViewModel = new EditViewModel(currentUser.Userid)
             {
                 Id = Id
             };
 
+            try
+            {
+                await ViewModel.InitAsync();
+            }
+            catch (NotConfiguredException)
+            {
+                NavigationManager.NavigateTo("/setting", true);
+            }
             ViewModel.Load.Execute().Subscribe(
                 (unit) => { },
                 (ex) =>
                 {
                     Console.WriteLine(ex);
                     IsLoading = false;
-                   
                 },
                 () =>
                 {
@@ -66,6 +73,7 @@ namespace Maincotech.Quizmaker.Pages.Exam
                     IsLoading = false;
                 });
         }
+
         private void OnLoadMore()
         {
             IsLoading = true;

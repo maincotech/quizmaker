@@ -1,5 +1,6 @@
 ﻿using AntDesign;
 using Maincotech.ExamAssistant.Dtos;
+using Maincotech.ExamAssistant.Services;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Threading.Tasks;
@@ -18,6 +19,15 @@ namespace Maincotech.Quizmaker.Pages.Exam
         {
             await base.OnInitializedAsync();
             ViewModel = new IndexViewModel(currentUser.Userid);
+            try
+            {
+                await ViewModel.InitAsync();
+            }
+            catch (NotConfiguredException)
+            {
+                NavigationManager.NavigateTo("/setting", true);
+            }
+
             ViewModel.Load.Execute().Subscribe(
                 (unit) => { },
                 (ex) =>

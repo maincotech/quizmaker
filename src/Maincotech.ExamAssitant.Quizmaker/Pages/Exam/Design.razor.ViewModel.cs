@@ -1,5 +1,5 @@
 ﻿using Maincotech.ExamAssistant.Dtos;
-using Maincotech.ExamAssistant.Services;
+using Maincotech.Quizmaker.ViewModels;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -10,10 +10,8 @@ using System.Threading.Tasks;
 
 namespace Maincotech.Quizmaker.Pages.Exam
 {
-    public class DesignViewModel : ReactiveObject
+    public class DesignViewModel : SettingBasedViewModel
     {
-        private readonly IExamService _examService;
-
         private string _Name;
 
         [Required]
@@ -47,9 +45,8 @@ namespace Maincotech.Quizmaker.Pages.Exam
             set => this.RaiseAndSetIfChanged(ref _Duration, value);
         }
 
-        public DesignViewModel()
+        public DesignViewModel(string userId) : base(userId)
         {
-            _examService = AppRuntimeContext.Current.Resolve<IExamService>();
             // _dataAdminService = AppRuntimeContext.Current.Resolve<Maincotech.Cms.Services.IAdminService>();
             Load = ReactiveCommand.CreateFromTask(LoadAsync);
             Save = ReactiveCommand.CreateFromTask(SaveAsync);
@@ -71,27 +68,27 @@ namespace Maincotech.Quizmaker.Pages.Exam
 
         private async Task LoadSectioinAsync(SectionViewModel vm)
         {
-            var dtos =  await _examService.GetQuestions(Id, vm.Id);
-            foreach(var dto in dtos)
+            var dtos = await ExamService.GetQuestions(Id, vm.Id);
+            foreach (var dto in dtos)
             {
                 var questionVM = dto.To<QuestionViewModel>();
                 vm.Questions.Add(questionVM);
             }
             vm.IsLoaded = true;
-          //  var section = Sections.First(x => x.Id == vm.SectionId);
-           // section.Questions.Remove(vm);
+            //  var section = Sections.First(x => x.Id == vm.SectionId);
+            // section.Questions.Remove(vm);
         }
 
         private async Task DeleteQuestionAsync(QuestionViewModel vm)
         {
-            await _examService.DeleteQuestion(vm.ExamId, vm.SectionId, vm.Id);
+            await ExamService.DeleteQuestion(vm.ExamId, vm.SectionId, vm.Id);
             var section = Sections.First(x => x.Id == vm.SectionId);
             section.Questions.Remove(vm);
         }
 
         private async Task DeleteSectionAsync(SectionViewModel vm)
         {
-            await _examService.DeleteSection(Id, vm.Id);
+            await ExamService.DeleteSection(Id, vm.Id);
             Sections.Remove(vm);
         }
 
@@ -104,7 +101,7 @@ namespace Maincotech.Quizmaker.Pages.Exam
                 Name = vm.Name,
                 Description = vm.MarkdownContent
             };
-            dto = await _examService.CreateOrUpdateSection(dto);
+            dto = await ExamService.CreateOrUpdateSection(dto);
             vm.Id = dto.Id;
             if (Sections.Contains(vm) == false)
             {
@@ -115,7 +112,7 @@ namespace Maincotech.Quizmaker.Pages.Exam
         private async Task CreateOrUpdateQuestionAsync(QuestionViewModel vm)
         {
             var dto = vm.To<QuestionDto>();
-            dto = await _examService.CreateOrUpdateQuestion(dto);
+            dto = await ExamService.CreateOrUpdateQuestion(dto);
             vm.Id = dto.Id;
             var sectionVM = Sections.First(x => x.Id == vm.SectionId);
             if (sectionVM.Questions.Contains(vm) == false)
@@ -129,7 +126,7 @@ namespace Maincotech.Quizmaker.Pages.Exam
             ExamDto examDto;
             if (Id.IsNotNullOrEmpty())
             {
-                examDto = await _examService.GetExam(Id);
+                examDto = await ExamService.GetExam(Id);
                 await LoadSections();
             }
             else
@@ -139,7 +136,7 @@ namespace Maincotech.Quizmaker.Pages.Exam
                     Name = "New exam",
                     Duration = 0,
                 };
-                examDto = await _examService.CreateOrUpdateExam(examDto);
+                examDto = await ExamService.CreateOrUpdateExam(examDto);
             }
             Id = examDto.Id;
             Name = examDto.Name;
@@ -152,7 +149,7 @@ namespace Maincotech.Quizmaker.Pages.Exam
 
         public async Task LoadSections()
         {
-            var sections = await _examService.GetSections(Id);
+            var sections = await ExamService.GetSections(Id);
             foreach (var section in sections)
             {
                 Sections.Add(new SectionViewModel
@@ -168,7 +165,7 @@ namespace Maincotech.Quizmaker.Pages.Exam
         public int GetIndex(QuestionViewModel viewModel)
         {
             var index = 1;
-            SectionViewModel sectionViewModel = null ;
+            SectionViewModel sectionViewModel = null;
             foreach (var section in Sections)
             {
                 if (section.Id == viewModel.SectionId)
@@ -180,7 +177,7 @@ namespace Maincotech.Quizmaker.Pages.Exam
             }
             foreach (var question in sectionViewModel.Questions)
             {
-                if(question.Id == viewModel.Id)
+                if (question.Id == viewModel.Id)
                 {
                     break;
                 }
@@ -200,7 +197,7 @@ namespace Maincotech.Quizmaker.Pages.Exam
                 Duration = Duration,
                 Provider = Provider
             };
-            examDto = await _examService.CreateOrUpdateExam(examDto);
+            examDto = await ExamService.CreateOrUpdateExam(examDto);
         }
     }
 }

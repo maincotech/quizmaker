@@ -24,5 +24,19 @@ namespace Maincotech.Quizmaker.ViewModels
             firesbaseSettings = await _settingService.GetFirebaseSetting(UserId);
             ParameterChecker.Against<NotConfiguredException>(firesbaseSettings == null, "The firebase settings have not been configured.");
         }
+
+        private IExamService _examService;
+
+        public IExamService ExamService
+        {
+            get
+            {
+                if (_examService == null)
+                {
+                    _examService = new ExamService(firesbaseSettings.ProjectId, firesbaseSettings.JsonCredentials);
+                }
+                return _examService;
+            }
+        }
     }
 }

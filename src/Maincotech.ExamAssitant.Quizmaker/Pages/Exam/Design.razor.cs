@@ -17,7 +17,7 @@ namespace Maincotech.Quizmaker.Pages.Exam
             IsLoading = true;
             if (Id.IsNotNullOrEmpty())
             {
-                ViewModel = new DesignViewModel()
+                ViewModel = new DesignViewModel(currentUser.Userid)
                 {
                     Id = Id
                 };
@@ -25,12 +25,19 @@ namespace Maincotech.Quizmaker.Pages.Exam
             else
             {
                 var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-                ViewModel = new DesignViewModel()
+                ViewModel = new DesignViewModel(currentUser.Userid)
                 {
                 };
                 //
             }
-          
+            try
+            {
+                await ViewModel.InitAsync();
+            }
+            catch (NotConfiguredException)
+            {
+                NavigationManager.NavigateTo("/setting", true);
+            }
             ViewModel.Load.Execute().Subscribe(
                 (unit) => { },
                 (ex) =>

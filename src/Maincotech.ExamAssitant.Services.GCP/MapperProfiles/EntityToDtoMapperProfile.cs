@@ -6,7 +6,7 @@ using Maincotech.ExamAssistant.Services.Models;
 
 namespace Maincotech.ExamAssistant.Services.MapperProfiles
 {
-    internal class EntityToDtoMapperProfile : Profile, IOrderedMapperProfile
+    public class EntityToDtoMapperProfile : Profile, IOrderedMapperProfile
     {
         public int Order => 2;
 

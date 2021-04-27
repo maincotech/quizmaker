@@ -57,7 +57,7 @@ namespace Maincotech.Quizmaker.Pages.Account
             NextPageToken = queryResult.NextPageToken;
             foreach (var dto in queryResult.Items)
             {
-                Items.Add(dto.To<AppUserDto>());
+                Items.Add(dto);
             }
         }
     }
