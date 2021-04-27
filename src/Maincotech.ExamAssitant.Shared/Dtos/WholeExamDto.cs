@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Maincotech.ExamAssitant.Dtos
+namespace Maincotech.ExamAssistant.Dtos
 {
     public class WholeExamDto
     {

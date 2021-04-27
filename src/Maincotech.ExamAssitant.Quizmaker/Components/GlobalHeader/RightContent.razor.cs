@@ -64,12 +64,9 @@ namespace Maincotech.Quizmaker.Components
         public void HandleSelectUser(MenuItem item)
         {
             switch (item.Key)
-            {
-                case "center":
-                    NavigationManager.NavigateTo("/MicrosoftIdentity/Account/EditProfile/", true);
-                    break;
+            {             
                 case "setting":
-                    NavigationManager.NavigateTo("/MicrosoftIdentity/Account/EditProfile/",true);
+                    NavigationManager.NavigateTo("/setting", true);
                     break;
                 case "logout":
                     NavigationManager.NavigateTo("/MicrosoftIdentity/Account/Signout/", true);

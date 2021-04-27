@@ -1,14 +1,7 @@
 ﻿@page "/exams/edit/{Id}"
 @inherits RuiComponentBase<EditViewModel>
 
-<PageContainer>
-    <Breadcrumb>
-        <Breadcrumb>
-            <BreadcrumbItem>Home</BreadcrumbItem>
-            <BreadcrumbItem>Exams</BreadcrumbItem>
-            <BreadcrumbItem>@ViewModel.Name</BreadcrumbItem>
-        </Breadcrumb>
-    </Breadcrumb>
+<PageContainer Title="Edit Questions">
     <Content>
         <div style="text-align: center;">
             <Search Placeholder="Please Enter" @bind-Value="ViewModel.SearchText"

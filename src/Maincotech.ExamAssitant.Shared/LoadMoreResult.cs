@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Maincotech.ExamAssitant
+namespace Maincotech.ExamAssistant
 {
     public class LoadMoreResult<TData>
     {

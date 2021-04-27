@@ -1,5 +1,6 @@
-﻿using Maincotech.ExamAssitant.Dtos;
-using Maincotech.ExamAssitant.Services;
+﻿using Maincotech.ExamAssistant.Dtos;
+using Maincotech.ExamAssistant.Services;
+using Maincotech.Utilities;
 using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Reactive;
@@ -11,12 +12,15 @@ namespace Maincotech.Quizmaker.Pages.Exam
     {
         private static Maincotech.Logging.ILogger _Logger = AppRuntimeContext.Current.GetLogger<IndexViewModel>();
         public ObservableCollection<ExamDto> Items { get; set; } = new ObservableCollection<ExamDto>();
+        public string UserId { get; }
 
-        private readonly IExamService _examService;
+        private IExamService _examService;
+        private readonly ISettingService _settingService;
 
-        public IndexViewModel()
+        public IndexViewModel(string userId)
         {
-            _examService = AppRuntimeContext.Current.Resolve<IExamService>();
+            UserId = userId;
+            _settingService = AppRuntimeContext.Current.Resolve<ISettingService>();
             Load = ReactiveCommand.CreateFromTask(LoadAsync);
             DeleteExam = ReactiveCommand.CreateFromTask<ExamDto>(DeleteExamAsync);
         }
@@ -27,7 +31,12 @@ namespace Maincotech.Quizmaker.Pages.Exam
 
         private async Task LoadAsync()
         {
+            //load setting
+            var firebaseSetting = await _settingService.GetFirebaseSetting(UserId);
+            ParameterChecker.Against<NotConfiguredException>(firebaseSetting == null, "The firebase settings have not been configured.");
+            _examService = new ExamService(firebaseSetting.ProjectId, firebaseSetting.JsonCredentials);
             Items.Clear();
+            Items.Add(new ExamDto());
             var exams = await _examService.GetExams();
             foreach (var exam in exams)
             {

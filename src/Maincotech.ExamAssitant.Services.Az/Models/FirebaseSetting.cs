@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Maincotech.ExamAssitant.Services.Models
+namespace Maincotech.ExamAssistant.Services.Models
 {
     public class FirebaseSetting
     {

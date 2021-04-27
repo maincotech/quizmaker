@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>Maincotech.ExamAssitant.Services</RootNamespace>
+    <RootNamespace>Maincotech.ExamAssistant.Services</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Maincotech.ExamAssitant.Shared\Maincotech.ExamAssitant.Shared.csproj" />
+    <ProjectReference Include="..\Maincotech.ExamAssitant.Shared\Maincotech.ExamAssistant.Shared.csproj" />
   </ItemGroup>
 
 </Project>

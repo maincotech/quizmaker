@@ -1,7 +1,6 @@
 ﻿@page "/setting"
 @inherits RuiComponentBase<IndexViewModel>
 
-
 <GridContent>
     <div class="main__b__2">
         <div class="leftMenu">
@@ -17,18 +16,21 @@
         <div class="right__b__0">
             <div class="title">@_menuMap[_selectKey]</div>
             <Spin Spinning="IsLoading">
-                <CascadingValue Value="this">
-                    @switch (_selectKey)
-                    {
-                        case "base":
+
+                @switch (_selectKey)
+                {
+                    case "data":
+                        <CascadingValue Value="_dataSettingItems">
                             <Maincotech.Quizmaker.Pages.Setting.Components.DataSettings />
-                            break;
-
-                    }
-                </CascadingValue>
+                        </CascadingValue>
+                        break;
+                    case "user":
+                        <CascadingValue Value="_userSettingItems">
+                            <Maincotech.Quizmaker.Pages.Setting.Components.UserSettings />
+                        </CascadingValue>
+                        break;
+                }
             </Spin>
-
-
         </div>
     </div>
 </GridContent>

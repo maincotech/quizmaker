@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Maincotech.ExamAssitant.Services
+namespace Maincotech.ExamAssistant.Services
 {
     public class AzCosmosDbSettings
     {

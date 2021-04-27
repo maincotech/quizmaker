@@ -1,6 +1,6 @@
 ﻿using Azure.Cosmos;
-using Maincotech.ExamAssitant.Dtos;
-using Maincotech.ExamAssitant.Services.Models;
+using Maincotech.ExamAssistant.Dtos;
+using Maincotech.ExamAssistant.Services.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Maincotech.ExamAssitant.Services
+namespace Maincotech.ExamAssistant.Services
 {
     public class SettingService : ISettingService, IDisposable
     {
@@ -49,7 +49,7 @@ namespace Maincotech.ExamAssitant.Services
 
         public async Task<FirebaseSettingDto> GetFirebaseSetting(string userID)
         {
-            var sqlQueryText = $"SELECT * FROM c WHERE c.UserId = '{userID}'";
+            var sqlQueryText = $"SELECT * FROM c WHERE c.userid = '{userID}'";
             CosmosContainer container = _cosmosClient.GetContainer(DatabaseId, ContainerId);
 
             QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText);

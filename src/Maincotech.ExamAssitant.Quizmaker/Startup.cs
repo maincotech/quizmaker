@@ -1,7 +1,7 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using ElectronNET.API;
-using Maincotech.ExamAssitant.Services;
+using Maincotech.ExamAssistant.Services;
 using Maincotech.Quizmaker.Services;
 using Maincotech.Storage;
 using Maincotech.Storage.AzureBlob;
@@ -96,7 +96,7 @@ namespace Maincotech.Quizmaker
 
             //viewmodels
 
-            services.AddScoped<Pages.Exam.IndexViewModel>();
+            //services.AddScoped<Pages.Exam.IndexViewModel>();
 
             AppRuntimeContext.Current.ConfigureServices(services, Configuration);
         }

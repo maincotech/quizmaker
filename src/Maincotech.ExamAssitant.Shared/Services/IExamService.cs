@@ -1,8 +1,8 @@
-﻿using Maincotech.ExamAssitant.Dtos;
+﻿using Maincotech.ExamAssistant.Dtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Maincotech.ExamAssitant.Services
+namespace Maincotech.ExamAssistant.Services
 {
     public interface IExamService
     {

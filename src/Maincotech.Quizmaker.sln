@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.ExamAssitant.Shared", "Maincotech.ExamAssitant.Shared\Maincotech.ExamAssitant.Shared.csproj", "{6C602C71-C117-418B-8EAF-28C43F7426A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.ExamAssistant.Shared", "Maincotech.ExamAssitant.Shared\Maincotech.ExamAssistant.Shared.csproj", "{6C602C71-C117-418B-8EAF-28C43F7426A4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.Quizmaker", "Maincotech.ExamAssitant.Quizmaker\Maincotech.Quizmaker.csproj", "{1A7D1009-0701-439C-A601-C413E70AB8A6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.ExamAssitant.Services.GCP", "Maincotech.ExamAssitant.Services.GCP\Maincotech.ExamAssitant.Services.GCP.csproj", "{80AF092C-DFFC-49B1-95E8-C43FCD21F573}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.ExamAssistant.Services.GCP", "Maincotech.ExamAssitant.Services.GCP\Maincotech.ExamAssistant.Services.GCP.csproj", "{80AF092C-DFFC-49B1-95E8-C43FCD21F573}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maincotech.ExamAssitant.Services.Az", "Maincotech.ExamAssitant.Services.Az\Maincotech.ExamAssitant.Services.Az.csproj", "{FAD03C67-DCBF-4551-805A-2C1ED1A8A2B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.ExamAssistant.Services.Az", "Maincotech.ExamAssitant.Services.Az\Maincotech.ExamAssistant.Services.Az.csproj", "{FAD03C67-DCBF-4551-805A-2C1ED1A8A2B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Maincotech.ExamAssitant.Dtos
+namespace Maincotech.ExamAssistant.Dtos
 {
     public class ExamDto
     {

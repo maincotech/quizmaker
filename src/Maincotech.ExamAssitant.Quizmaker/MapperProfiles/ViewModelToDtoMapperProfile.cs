@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Maincotech.Adapter;
-using Maincotech.ExamAssitant.Dtos;
+using Maincotech.ExamAssistant.Dtos;
 using Maincotech.Quizmaker.Pages.Exam;
 using Maincotech.Quizmaker.Pages.Setting.Components;
 

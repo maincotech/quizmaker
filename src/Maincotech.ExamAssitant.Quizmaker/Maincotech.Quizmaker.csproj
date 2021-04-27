@@ -38,9 +38,8 @@
     <Exec WorkingDirectory="$(SolutionDir)" Command="npm run gulp:pro" />
   </Target>
   <ItemGroup>
-    <ProjectReference Include="..\Maincotech.ExamAssitant.Services.Az\Maincotech.ExamAssitant.Services.Az.csproj" />
-    <ProjectReference Include="..\Maincotech.ExamAssitant.Services.GCP\Maincotech.ExamAssitant.Services.GCP.csproj" />
-    <ProjectReference Include="..\Maincotech.ExamAssitant.Shared\Maincotech.ExamAssitant.Shared.csproj" />
+    <ProjectReference Include="..\Maincotech.ExamAssitant.Services.Az\Maincotech.ExamAssistant.Services.Az.csproj" />
+    <ProjectReference Include="..\Maincotech.ExamAssitant.Services.GCP\Maincotech.ExamAssistant.Services.GCP.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="electron.manifest.json">

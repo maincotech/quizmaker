@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Maincotech.Adapter;
-using Maincotech.ExamAssitant.Dtos;
-using Maincotech.ExamAssitant.Services.Models;
+using Maincotech.ExamAssistant.Dtos;
+using Maincotech.ExamAssistant.Services.Models;
 
-namespace Maincotech.ExamAssitant.Services.MapperProfiles
+namespace Maincotech.ExamAssistant.Services.MapperProfiles
 {
     internal class EntityToDtoMapperProfile : Profile, IOrderedMapperProfile
     {

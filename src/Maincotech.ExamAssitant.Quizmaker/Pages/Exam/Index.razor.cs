@@ -1,26 +1,13 @@
 ﻿using AntDesign;
-using Maincotech.ExamAssitant.Dtos;
+using Maincotech.ExamAssistant.Dtos;
 using Microsoft.AspNetCore.Components;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Maincotech.Quizmaker.Pages.Exam
 {
     public partial class Index
     {
-        [Inject]
-        public IndexViewModel IndexViewModel
-        {
-            get => ViewModel;
-            set => ViewModel = value;
-        }
-
-        [Inject]
-        private IconService IconServic { get; set; }
-
-
         private readonly ListGridType _listGridType = new ListGridType
         {
             Gutter = 24,
@@ -29,22 +16,26 @@ namespace Maincotech.Quizmaker.Pages.Exam
 
         protected override async Task OnInitializedAsync()
         {
-            await IconServic.CreateFromIconfontCN("//at.alicdn.com/t/font_2504866_x7llrglw92.js");
-
-            IsLoading = true;
+            await base.OnInitializedAsync();
+            ViewModel = new IndexViewModel(currentUser.Userid);
             ViewModel.Load.Execute().Subscribe(
                 (unit) => { },
                 (ex) =>
                 {
                     Console.WriteLine(ex);
                     IsLoading = false;
+                    if (ex.InnerException is NotConfiguredException)
+                    {
+                        NavigationManager.NavigateTo("/setting", true);
+                    }
                 },
                 () =>
                 {
                     IsLoading = false;
                 });
         }
-        private bool _IsLoading;
+
+        private bool _IsLoading = true;
 
         public bool IsLoading
         {
@@ -57,6 +48,11 @@ namespace Maincotech.Quizmaker.Pages.Exam
                     InvokeAsync(StateHasChanged);
                 }
             }
+        }
+
+        private void OnAddExam()
+        {
+            NavigationManager.NavigateTo("exams/design");
         }
 
         private async Task OnDeleteExam(ExamDto viewModel)

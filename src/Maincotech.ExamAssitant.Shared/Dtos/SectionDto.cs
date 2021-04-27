@@ -1,4 +1,4 @@
-﻿namespace Maincotech.ExamAssitant.Dtos
+﻿namespace Maincotech.ExamAssistant.Dtos
 {
     public class SectionDto
     {

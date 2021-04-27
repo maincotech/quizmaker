@@ -1,5 +1,5 @@
-﻿using Maincotech.ExamAssitant.Dtos;
-using Maincotech.ExamAssitant.Services;
+﻿using Maincotech.ExamAssistant.Dtos;
+using Maincotech.ExamAssistant.Services;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;

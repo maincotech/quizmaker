@@ -1,4 +1,4 @@
-﻿namespace Maincotech.ExamAssitant
+﻿namespace Maincotech.ExamAssistant
 {
     public class LoadMoreQuery
     {

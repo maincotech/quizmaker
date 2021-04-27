@@ -1,15 +1,14 @@
-﻿using AntDesign;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Maincotech.Quizmaker.Pages.Setting.Components
 {
-    public partial class DataSettings
+    public partial class UserSettings
     {
-        [CascadingParameter] 
+        [CascadingParameter]
         private List<UserSettingItem> Data { get; set; }
-
     }
 }

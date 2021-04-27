@@ -1,6 +1,6 @@
 ﻿using Google.Cloud.Firestore;
 
-namespace Maincotech.ExamAssitant.Services.Models
+namespace Maincotech.ExamAssistant.Services.Models
 {
     [FirestoreData]
     public class Exam

@@ -1,52 +1,34 @@
-﻿@page "/exams"
+﻿@page "/"
 @inherits RuiComponentBase<IndexViewModel>
 
 <PageContainer Title="Exams">
-    <Breadcrumb>
-        <Breadcrumb>
-            <BreadcrumbItem>Home</BreadcrumbItem>
-            <BreadcrumbItem>Exams</BreadcrumbItem>
-        </Breadcrumb>
-    </Breadcrumb>
     <Content>
         <div class="pageHeaderContent__b__1">
             <p>
-                Paragraph: Ant.design, the service design platform of Ant Financial, seamlessly connects to the ecosystem of Ant Financial with minimal workload.
-                Provide experience solutions that span design and development.
+                The Exam Assitant app is a simple study utility which allows users to create a practice question bank to study for an exam.
+                It allows the creation of multiple choice, true/false, and yes/no types of questions as well as hints.
             </p>
-            <div class="contentLink">
-                <a>
-                    <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/MjEImQtenlyueSmVEfUD.svg" />
-                    Quick start
-                </a>
-                <a>
-                    <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/NbuDUAuBlIApFuDvWiND.svg" />
-                    Product Introduction
-                </a>
-                <a>
-                    <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/ohOEPSYdDTNnyMbGuyLb.svg" />
-                    Product Documentation
-                </a>
-            </div>
+            
         </div>
     </Content>
     <ExtraContent>
         <div class="extraImg">
-            <img alt="This is a title"
+            <img alt=""
                  src="https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png" />
         </div>
     </ExtraContent>
     <ChildContent>
         <div class="cardList">
-            <AntList TItem="Maincotech.ExamAssitant.Dtos.ExamDto"
+            <AntList TItem="Maincotech.ExamAssistant.Dtos.ExamDto"
                      DataSource="ViewModel.Items"
                      ItemLayout="ListItemLayout.Horizontal"
+                     Loading="IsLoading"
                      Grid="_listGridType">
                 <ListItem NoFlex Grid="_listGridType">
                     @if (string.IsNullOrEmpty(context.Id))
                     {
-                        <Button Type="dashed" class="newButton">
-                            <Icon Type="plus" Theme="outline" /> Add Product
+                        <Button Type="dashed" class="newButton" OnClick="OnAddExam">
+                            <Icon Type="plus" Theme="outline" /> Add Exam
                         </Button>
                     }
                     else
@@ -74,7 +56,7 @@
                                     </p>
                                     <p>
                                         <Icon Type="calendar" Theme="twotone" />
-                                        Last update On: @context.UpdateOn
+                                        Last update On: @context.UpdateOn.ToFriendlyDateTimeString()
                                     </p>
                                 </DescriptionTemplate>
                             </CardMeta>
@@ -87,7 +69,7 @@
 
 @code
 {
-    private IList<RenderFragment> GetExamActions(Maincotech.ExamAssitant.Dtos.ExamDto exam)
+    private IList<RenderFragment> GetExamActions(Maincotech.ExamAssistant.Dtos.ExamDto exam)
     {
         ////at.alicdn.com/t/font_2504866_9vm4yvl6p8e.js
         var result = new List<RenderFragment>();

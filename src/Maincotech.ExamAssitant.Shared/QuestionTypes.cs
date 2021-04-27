@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Maincotech.ExamAssitant
+namespace Maincotech.ExamAssistant
 {
     public enum QuestionTypes
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Maincotech.ExamAssitant.Services.Models
+namespace Maincotech.ExamAssistant.Services.Models
 {
     [FirestoreData]
     public class Question

@@ -1,6 +1,6 @@
 ﻿using Google.Cloud.Firestore;
-using Maincotech.ExamAssitant.Dtos;
-using Maincotech.ExamAssitant.Services.Models;
+using Maincotech.ExamAssistant.Dtos;
+using Maincotech.ExamAssistant.Services.Models;
 using Maincotech.Utilities;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Maincotech.ExamAssitant.Services
+namespace Maincotech.ExamAssistant.Services
 {
     public class ExamService : IExamService
     {
