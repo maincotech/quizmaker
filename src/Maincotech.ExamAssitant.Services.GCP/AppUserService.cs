@@ -13,13 +13,16 @@ namespace Maincotech.ExamAssistant.Services
 
         public AppUserService(string jsonCredentials)
         {
-            var defaultApp = FirebaseApp.Create(new AppOptions()
+            if (FirebaseApp.DefaultInstance == null)
             {
-                Credential = GoogleCredential.FromJson(jsonCredentials),
-            });
+                var defaultApp = FirebaseApp.Create(new AppOptions()
+                {
+                    Credential = GoogleCredential.FromJson(jsonCredentials),
+                });
+            }
 
             // Retrieve services by passing the defaultApp variable...
-            _firebaseAuth = FirebaseAuth.GetAuth(defaultApp);
+            _firebaseAuth = FirebaseAuth.DefaultInstance;
         }
 
         public async Task<AppUserDto> CreateUserAsync(AppUserDto dto)

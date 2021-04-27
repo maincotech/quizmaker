@@ -25,11 +25,24 @@ namespace Maincotech.Quizmaker.Pages.Account
 
         public ObservableCollection<AppUserDto> Items { get; set; } = new ObservableCollection<AppUserDto>();
         public ReactiveCommand<Unit, Unit> LoadMore { get; }
+        public ReactiveCommand<AppUserViewModel, Unit> AddAppUser { get; }
         private IAppUserService _appUserService;
 
         public IndexViewModel(string userId) : base(userId)
         {
             LoadMore = ReactiveCommand.CreateFromTask(LoadMoreAsync);
+            AddAppUser = ReactiveCommand.CreateFromTask<AppUserViewModel>(AddUserAsync);
+        }
+
+        private async Task AddUserAsync(AppUserViewModel viewModel)
+        {
+            var dto = await _appUserService.CreateUserAsync(new AppUserDto
+            {
+                Email = viewModel.Email,
+                Password = viewModel.Password
+            });
+
+            Items.Add(dto);
         }
 
         private async Task LoadMoreAsync()

@@ -1,10 +1,14 @@
-﻿using System;
+﻿using AntDesign;
+using Microsoft.AspNetCore.Components;
+using System;
 using System.Threading.Tasks;
 
 namespace Maincotech.Quizmaker.Pages.Account
 {
     public partial class Index
     {
+        [Inject] private DrawerService DrawerService { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
@@ -48,6 +52,28 @@ namespace Maincotech.Quizmaker.Pages.Account
 
         private async Task OnAddAppUser()
         {
+            var options = new DrawerOptions()
+            {
+                Title = "Edit Section",
+                Width = 450,
+            };
+            var vm = new AppUserViewModel();
+            var result = await DrawerService.CreateDialogAsync<Components.AddAppUser, AppUserViewModel, bool>(options, vm);
+            if (result)
+            {
+                IsLoading = true;
+                ViewModel.AddAppUser.Execute(vm).Subscribe(
+                (unit) => { },
+                (ex) =>
+                {
+                    Console.WriteLine(ex);
+                    IsLoading = false;
+                },
+                () =>
+                {
+                    IsLoading = false;
+                });
+            }
         }
     }
 }
