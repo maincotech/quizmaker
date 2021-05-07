@@ -1,0 +1,36 @@
+﻿@page "/setting"
+@inherits RuiComponentBase<IndexViewModel>
+
+<GridContent>
+    <div class="main__b__2">
+        <div class="leftMenu">
+            <Menu Mode="MenuMode.Inline"
+                  SelectedKeys="new []{_selectKey}"
+                  OnMenuItemClicked="SelectKey">
+                @foreach (var item in _menuMap)
+                {
+                    <MenuItem Key="@item.Key">@item.Value</MenuItem>
+                }
+            </Menu>
+        </div>
+        <div class="right__b__0">
+            <div class="title">@_menuMap[_selectKey]</div>
+            <Spin Spinning="IsLoading">
+
+                @switch (_selectKey)
+                {
+                    case "data":
+                        <CascadingValue Value="_dataSettingItems">
+                            <Maincotech.ExamAssistant.Pages.Setting.Components.DataSettings />
+                        </CascadingValue>
+                        break;
+                    case "user":
+                        <CascadingValue Value="_userSettingItems">
+                            <Maincotech.ExamAssistant.Pages.Setting.Components.UserSettings />
+                        </CascadingValue>
+                        break;
+                }
+            </Spin>
+        </div>
+    </div>
+</GridContent>

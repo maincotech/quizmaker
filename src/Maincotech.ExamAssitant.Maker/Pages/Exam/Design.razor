@@ -1,0 +1,153 @@
+﻿@page "/exams/design"
+@page "/exams/design/{Id}"
+@inherits RuiComponentBase<DesignViewModel>
+
+<AntDesign.Pro.Layout.PageContainer Title="Design Exam">
+    
+    <ChildContent>
+        <Form Model="ViewModel"
+              LabelColSpan="6"
+              WrapperColSpan="16"
+              Loading="IsLoading" OnFinish="async(ctx) => await OnFinish(ctx)" OnFinishFailed="OnFinishFailed">
+            <Card Style="margin-bottom: 2px;"
+                  Title="Basic Information"
+                  BodyStyle="padding: 0px;">
+                <Extra>
+                    <Button Icon="save" @onclick="OnSave">
+                    </Button>
+                </Extra>
+                <ChildContent>
+                    <FormItem Label="Title">
+                        <Input Placeholder="Please input title" @bind-Value="context.Name" />
+                    </FormItem>
+
+                    <FormItem Label="Provider">
+                        <Input Placeholder="Please input the provider" @bind-Value="context.Provider" />
+                    </FormItem>
+
+                    <FormItem Label="Duration">
+                        <Input @bind-Value="@context.Duration">
+                        <Suffix>Minutes </Suffix>
+                        </Input>
+                    </FormItem>
+                </ChildContent>
+            </Card>
+
+            <Card Style="margin-bottom: 2px;"
+                  Title="Sections"
+                  BodyStyle="padding: 0px;">
+                <Extra>
+                    <Button Type="primary"
+                            Icon="plus" @onclick="OnAddSection">
+                        Add Section
+                    </Button>
+                </Extra>
+            </Card>
+
+            <div>
+                <Collapse>
+                    @foreach (var item in ViewModel.Sections)
+                    {
+                        <Panel Header="@item.Name" Key="@item.Id" OnActiveChange="(val) => OnSectionCollapsed(val, item) ">
+                            <ExtraTemplate>
+                                <span @onclick:stopPropagation>
+                                    <Icon Class="section-action" Type="edit" OnClick="async() => await OnEditSection(item)" />
+                                    <Popconfirm Title=@($"Are you sure to delete section ({item.Name}) with {item.NumberOfQuestions} questions?")
+                                                OnConfirm="async() => await OnDeleteSection(item)">
+                                        <Icon Class="section-action" Type="delete" />
+                                    </Popconfirm>
+                                </span>
+                            </ExtraTemplate>
+                            <ChildContent>
+                                <Preview Markdown="@item.MarkdownContent" />
+
+                                <Card Style="margin-bottom: 2px;"
+                                      Title="Questions"
+                                      BodyStyle="padding: 0px;">
+                                    <Extra>
+                                        <Button Type="primary"
+                                                Icon="plus" @onclick="async() =>await OnAddQuestion(item)">
+                                            Add Question
+                                        </Button>
+                                    </Extra>
+
+                                    <ChildContent>
+                                        <AntList TItem="QuestionViewModel"
+                                                 Context="listItemContext"
+                                                 Size="large"
+                                                 ItemLayout="ListItemLayout.Vertical"
+                                                 DataSource="@item.Questions">
+                                            <ListItem Actions="GetQuestionActions(item,listItemContext)">
+                                                <ListItemMeta>
+                                                    <AvatarTemplate>
+                                                        <Avatar Style="@($"vertical-align: middle;")" Size="large">
+                                                            @ViewModel.GetIndex(listItemContext)
+                                                        </Avatar>
+                                                    </AvatarTemplate>
+                                                    <DescriptionTemplate>
+                                                        <Preview Markdown="@listItemContext.Title" />
+                                                        @foreach (var item in listItemContext.Options)
+                                                        {
+                                                            if (listItemContext.QuestionType == ViewModels.QuestionTypes.DragDrop)
+                                                            {
+                                                                <Alert Type="@AlertType.Success"
+                                                                       Message="@($"{item.Name}-{item.AnswerText}")" />
+                                                            }
+                                                            else
+                                                            {
+                                                                if (item.IsCorrect)
+                                                                {
+                                                                    <Alert Type="@AlertType.Success" ShowIcon="true">
+                                                                        <MessageTemplate>
+                                                                            <Preview Markdown="@item.Name" />
+                                                                        </MessageTemplate>
+                                                                     </Alert>
+                                                                }
+                                                                else
+                                                                {
+                                                    <Alert Type="@AlertType.Error" ShowIcon="true">
+                                                        <MessageTemplate>
+                                                            <Preview Markdown="@item.Name" />
+                                                        </MessageTemplate>
+                                                    </Alert>
+                                                                }
+                                                            }
+                                                        }
+                                                    </DescriptionTemplate>
+                                                </ListItemMeta>
+                                            </ListItem>
+                                        </AntList>
+                                    </ChildContent>
+                                </Card>
+                            </ChildContent>
+                        </Panel>
+                    }
+                </Collapse>
+            </div>
+        </Form>
+    </ChildContent>
+</AntDesign.Pro.Layout.PageContainer>
+
+@code{
+    RenderFragment extra =@<div @onclick:stopPropagation><Icon Type="setting"></Icon></div>;
+private RenderFragment[] GetQuestionActions(SectionViewModel sectionViewModel, QuestionViewModel viewModel)
+{
+var result = new List<RenderFragment>();
+result.Add(GetEditAction(viewModel));
+result.Add(GetDeleteAction(sectionViewModel, viewModel));
+return result.ToArray();
+}
+private RenderFragment GetDeleteAction(SectionViewModel sectionViewModel, QuestionViewModel viewModel)
+{
+RenderFragment option =@<Popconfirm Title=@($"Are you sure to delete question ({viewModel.Title})?")
+            OnConfirm="async() => await OnRemoveQuestion(viewModel)">
+    <Icon Type="delete" Class="section-action"></Icon>
+    </Popconfirm>;
+    return option;
+    }
+    private RenderFragment GetEditAction(QuestionViewModel viewModel)
+    {
+    RenderFragment option =@<Icon Type="edit" Class="section-action" OnClick="async () => await OnEditQuestion(viewModel)"></Icon>;
+    return option;
+    }
+    }

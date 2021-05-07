@@ -1,0 +1,58 @@
+﻿@namespace Maincotech.ExamAssistant.Maker
+@inherits LayoutComponentBase
+
+
+<Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+    <Authorized>
+        <AntDesign.Pro.Layout.BasicLayout Title="Exam Assistant" Logo="@("/logo.png")"
+                                          MenuData="_menuData">
+            <RightContentRender>
+                <Maincotech.ExamAssistant.Maker.Components.RightContent />
+            </RightContentRender>
+            <ChildContent>
+                @Body
+            </ChildContent>
+            <FooterRender>
+                <AntDesign.Pro.Layout.GlobalFooter Links="AppSettings.FooterLinks">
+                    <Copyright>
+                        Copyright <Icon Type="copyright" /> 2021 Maincotech
+                    </Copyright>
+                </AntDesign.Pro.Layout.GlobalFooter>
+            </FooterRender>
+        </AntDesign.Pro.Layout.BasicLayout>
+        <SettingDrawer />
+    </Authorized>
+    <NotAuthorized>
+        @if (!context.User.Identity.IsAuthenticated)
+        {
+<RedirectToLogin /> }
+                else
+                {
+<Result Status="403"
+        Title="403"
+        SubTitle="Sorry, you are not authorized to access this page.">
+    <Extra>
+        <Button Type="primary">Back Home</Button>
+        <a href="/MicrosoftIdentity/Account/SignIn">Log in</a>
+    </Extra>
+</Result>}
+    </NotAuthorized>
+</Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+
+
+@code
+{ private MenuDataItem[] _menuData = { };
+
+            [Inject] public HttpClient HttpClient { get; set; }
+
+            [Inject] private IconService IconService { get; set; }
+
+            protected override async Task OnInitializedAsync()
+            {
+                await IconService.CreateFromIconfontCN("//at.alicdn.com/t/font_2504866_x7llrglw92.js");
+                await base.OnInitializedAsync();
+                _menuData = await HttpClient.GetFromJsonAsync<MenuDataItem[]>("data/menu.json");
+                //  _menuData.Add(new MenuDataItem() { Name = "Home", Key = "/",Path="/", Icon = "dashboard" });
+                //  _menuData.Add(new MenuDataItem() { Name = "Setting", Key = "setting", Path = "/setting", Icon = "profile" });
+
+            } }

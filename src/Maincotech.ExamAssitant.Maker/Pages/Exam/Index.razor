@@ -1,0 +1,86 @@
+﻿@page "/"
+@inherits RuiComponentBase<IndexViewModel>
+
+<PageContainer Title="Exams">
+    <Content>
+        <div class="pageHeaderContent__b__1">
+            <p>
+                The Exam Assitant app is a simple study utility which allows users to create a practice question bank to study for an exam.
+                It allows the creation of multiple choice, true/false, and yes/no types of questions as well as hints.
+            </p>
+            
+        </div>
+    </Content>
+    <ExtraContent>
+        <div class="extraImg">
+            <img alt=""
+                 src="https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png" />
+        </div>
+    </ExtraContent>
+    <ChildContent>
+        <div class="cardList">
+            <AntList TItem="Maincotech.ExamAssistant.ExamDto"
+                     DataSource="ViewModel.Items"
+                     ItemLayout="ListItemLayout.Horizontal"
+                     Loading="IsLoading"
+                     Grid="_listGridType">
+                <ListItem NoFlex Grid="_listGridType">
+                    @if (string.IsNullOrEmpty(context.Id))
+                    {
+                        <Button Type="dashed" class="newButton" OnClick="OnAddExam">
+                            <Icon Type="plus" Theme="outline" /> Add Exam
+                        </Button>
+                    }
+                    else
+                    {
+                        <Card Hoverable Bordered Class="card" Actions="@GetExamActions(context)">
+                            <CardMeta>
+                                @*<AvatarTemplate>
+                                        <img alt="" class="cardAvatar" src="@context.Avatar" />
+                                    </AvatarTemplate>*@
+                                <TitleTemplate>
+                                    <a>@context.Name</a>
+                                </TitleTemplate>
+                                <DescriptionTemplate>
+                                    <p>
+                                        <Icon Type="bank" Theme="twotone" />
+                                        Vendor: @context.Provider
+                                    </p>
+                                    <p>
+                                        <Icon Type="field-time" Theme="outline" />
+                                        Duration: @context.Duration munitues
+                                    </p>
+                                    <p>
+                                        <Icon Type="profile" Theme="twotone" />
+                                        Sample questions: @context.NumberOfQuestions
+                                    </p>
+                                    <p>
+                                        <Icon Type="calendar" Theme="twotone" />
+                                        Last update On: @context.UpdateOn.DateTime.ToFriendlyDateTimeString()
+                                    </p>
+                                </DescriptionTemplate>
+                            </CardMeta>
+                        </Card>}
+                </ListItem>
+            </AntList>
+        </div>
+    </ChildContent>
+</PageContainer>
+
+@code
+{
+    private IList<RenderFragment> GetExamActions(Maincotech.ExamAssistant.ExamDto exam)
+    {
+        ////at.alicdn.com/t/font_2504866_9vm4yvl6p8e.js
+        var result = new List<RenderFragment>();
+        result.Add(@<AntDesign.Tooltip Title="@("Design Exam")"><a href="@($"exams/design/{exam.Id}")"><IconFont Type="icondesign" /></a></AntDesign.Tooltip>);
+result.Add(@<AntDesign.Tooltip Title="@("Edit Questions")"><a href="@($"exams/edit/{exam.Id}")"><IconFont Type="icon-exam" /></a></AntDesign.Tooltip>);
+result.Add(@<AntDesign.Tooltip Title="@("Delete Exam")">
+    <Popconfirm Title=@($"Are you sure to delete exam ({exam.Name}) with {exam.NumberOfQuestions} questions?")
+                OnConfirm="async() => await OnDeleteExam(exam)">
+        <Icon Type="delete" Theme="outline" />
+    </Popconfirm>
+</AntDesign.Tooltip>);
+return result;
+}
+}
