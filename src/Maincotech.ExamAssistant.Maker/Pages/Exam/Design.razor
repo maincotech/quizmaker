@@ -30,6 +30,10 @@
                         <Suffix>Minutes </Suffix>
                         </Input>
                     </FormItem>
+
+                    <FormItem Label="Description">
+                        <Editor @bind-Value="context.Description" Mode="wysiwyg" MinHeight="500" Options="@EditorOptions" />
+                    </FormItem>
                 </ChildContent>
             </Card>
 

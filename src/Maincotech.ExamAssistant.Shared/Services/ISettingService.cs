@@ -11,5 +11,7 @@ namespace Maincotech.ExamAssistant.Services
     {
         Task<FirebaseSettingDto> CreateOrFirebaseSetting(FirebaseSettingDto dto);
         Task<FirebaseSettingDto> GetFirebaseSetting(string userID);
+        Task<FirebaseSettingDto> GetFirebaseSettingByProjectId(string projectId);
+
     }
 }

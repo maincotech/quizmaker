@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.ExamAssistant.Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.ExamAssistant.Services.Az", "..\Maincotech.ExamAssistant.Services.Az\Maincotech.ExamAssistant.Services.Az.csproj", "{8BA44874-9057-49FD-B42E-F979D8EACC1E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.ExamAssistant.MobileAPI", "..\Maincotech.ExamAssistant.MobileAPI\Maincotech.ExamAssistant.MobileAPI.csproj", "{60A10165-2791-4577-9D2D-B755A761005F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maincotech.Common", "..\..\..\libs\src\Maincotech.Common\Maincotech.Common.csproj", "{F6613817-A302-44FD-B59A-74BDBD7BB9EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{8BA44874-9057-49FD-B42E-F979D8EACC1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BA44874-9057-49FD-B42E-F979D8EACC1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BA44874-9057-49FD-B42E-F979D8EACC1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60A10165-2791-4577-9D2D-B755A761005F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60A10165-2791-4577-9D2D-B755A761005F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60A10165-2791-4577-9D2D-B755A761005F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60A10165-2791-4577-9D2D-B755A761005F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6613817-A302-44FD-B59A-74BDBD7BB9EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6613817-A302-44FD-B59A-74BDBD7BB9EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6613817-A302-44FD-B59A-74BDBD7BB9EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6613817-A302-44FD-B59A-74BDBD7BB9EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

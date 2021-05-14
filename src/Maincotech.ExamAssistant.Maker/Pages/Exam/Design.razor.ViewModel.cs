@@ -44,6 +44,16 @@ namespace Maincotech.ExamAssistant.Pages.Exam
             set => this.RaiseAndSetIfChanged(ref _Duration, value);
         }
 
+        private string _Description;
+
+        public string Description
+        {
+            get => _Description;
+            set => this.RaiseAndSetIfChanged(ref _Description, value);
+        }
+        public int NumberOfQuestions { get; set; }
+        public int NumberOfSections { get; set; }
+
         public DesignViewModel(string userId) : base(userId)
         {
             // _dataAdminService = AppRuntimeContext.Current.Resolve<Maincotech.Cms.Services.IAdminService>();
@@ -101,6 +111,10 @@ namespace Maincotech.ExamAssistant.Pages.Exam
                 Description = vm.MarkdownContent
             };
             dto = await client.CreateOrUpdateSectionAsync(Id, dto);
+            if (vm.Id.IsNullOrEmpty())
+            {
+                NumberOfSections++;
+            }
             vm.Id = dto.Id;
             if (Sections.Contains(vm) == false)
             {
@@ -112,6 +126,10 @@ namespace Maincotech.ExamAssistant.Pages.Exam
         {
             var dto = vm.To<QuestionDto>();
             dto = await client.CreateOrUpdateQuestionAsync(Id, vm.SectionId, dto);
+            if (vm.Id.IsNullOrEmpty())
+            {
+                NumberOfQuestions++;
+            }
             vm.Id = dto.Id;
             var sectionVM = Sections.First(x => x.Id == vm.SectionId);
             if (sectionVM.Questions.Contains(vm) == false)
@@ -141,7 +159,9 @@ namespace Maincotech.ExamAssistant.Pages.Exam
             Name = examDto.Name;
             Provider = examDto.Provider;
             Duration = examDto.Duration;
-
+            NumberOfQuestions = examDto.NumberOfQuestions;
+            NumberOfSections = examDto.NumberOfSections;
+            Description = examDto.Description;
             //Sections = new ObservableCollection<SectionViewModel>();
             //Questions = new ObservableCollection<QuestionViewModel>();
         }
@@ -194,7 +214,10 @@ namespace Maincotech.ExamAssistant.Pages.Exam
                 Id = Id,
                 Name = Name,
                 Duration = Duration,
-                Provider = Provider
+                Provider = Provider,
+                Description = Description,
+                NumberOfQuestions = NumberOfQuestions,
+                NumberOfSections = NumberOfSections
             };
             examDto = await client.CreateOrUpdateExamAsync(examDto);
         }

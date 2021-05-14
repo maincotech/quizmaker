@@ -262,6 +262,7 @@ namespace Maincotech.ExamAssistant.Services
                 }
                 var dto = entity.To<QuestionDto>();
                 dto.ExamId = query.ExamId;
+                dto.SectionName = query.Section.Name;
                 dto.SectionId = query.Section.Reference.Id;
                 remain--;
                 result.Add(dto);

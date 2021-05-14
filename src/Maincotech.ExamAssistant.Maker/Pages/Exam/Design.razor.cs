@@ -1,7 +1,9 @@
 ﻿using AntDesign;
+using Maincotech.Web.Components.Vditor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Maincotech.ExamAssistant.Pages.Exam
@@ -10,6 +12,11 @@ namespace Maincotech.ExamAssistant.Pages.Exam
     {
         [Parameter] public string Id { get; set; }
         [Inject] private DrawerService DrawerService { get; set; }
+
+        private Dictionary<string, object> EditorOptions => new()
+        {
+            { "upload", new UploadOptions { Url = "/api/files/vditorUpload" } }
+        };
 
         protected override async Task OnParametersSetAsync()
         {

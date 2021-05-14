@@ -74,5 +74,31 @@ namespace Maincotech.ExamAssistant.Services
             }
             return entities.First().To<FirebaseSettingDto>();
         }
+
+        public async Task<FirebaseSettingDto> GetFirebaseSettingByProjectId(string projectId)
+        {
+            var sqlQueryText = $"SELECT * FROM c WHERE c.projectid = '{projectId}'";
+            var container = _cosmosClient.GetContainer(DatabaseId, ContainerId);
+
+            QueryDefinition queryDefinition = new(sqlQueryText);
+            List<FirebaseSetting> entities = new();
+            var iterator = container.GetItemQueryIterator<FirebaseSetting>(queryDefinition);
+
+            while (iterator.HasMoreResults)
+            {
+                var response = await iterator.ReadNextAsync();
+                entities.AddRange(response.Resource);
+            }
+            //await foreach (FirebaseSetting entity in container.GetItemQueryIterator<FirebaseSetting>(queryDefinition))
+            //{
+            //    entities.Add(entity);
+            //}
+
+            if (entities.Count == 0)
+            {
+                return null;
+            }
+            return entities.First().To<FirebaseSettingDto>();
+        }
     }
 }

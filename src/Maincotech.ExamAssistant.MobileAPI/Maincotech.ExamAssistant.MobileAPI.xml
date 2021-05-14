@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Maincotech.ExamAssistant.MobileAPI</name>
+    </assembly>
+    <members>
+        <member name="M:Maincotech.ExamAssistant.MobileAPI.Controllers.ExamsController.GetExams">
+            <summary>
+            Get exams
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Maincotech.ExamAssistant.MobileAPI.Controllers.ExamsController.GetQuestions(System.String)">
+            <summary>
+            Get all questions under the specified section
+            </summary>
+            <param name="examId"></param>
+            <param name="sectionId"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
